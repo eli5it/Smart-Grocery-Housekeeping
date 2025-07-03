@@ -4,20 +4,23 @@ import "./App.css";
 
 function App() {
   useEffect(() => {
-    fetch("/api/time")
+    fetch("/api/items")
       .then((res) => res.json())
       .then((data) => {
-        setCurrentTime(data.time);
+        console.log(data);
+        setItems(data);
       });
   }, []);
 
-  const [currentTime, setCurrentTime] = useState(0);
-
+  const [items, setItems] = useState([]);
+  console.log(items);
   return (
     <>
-      <p>
-        The current time is {new Date(currentTime * 1000).toLocaleString()}.
-      </p>
+      <ul>
+        {items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
     </>
   );
 }
