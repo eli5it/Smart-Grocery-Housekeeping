@@ -3,6 +3,8 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+import sqlalchemy as sa
+import sqlalchemy.orm as so
 
 # assistance from ChatGPT https://chatgpt.com/share/6865e6ff-26c0-8012-a772-70b7b9de5273
 
@@ -11,6 +13,13 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
+
+    @app.shell_context_processor
+    def make_shell_context():
+        # DO NOT MOVE imports
+        # need to perform imports here to avoid circular dependency issue
+        from app.models import Item
+        return {'sa': sa, 'so': so, 'db': db, 'Item': Item}
 
     CORS(app)
     app.config.from_object(Config)
