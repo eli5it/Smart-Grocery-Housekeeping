@@ -16,7 +16,7 @@ function App() {
   console.log(items);
   return (
     <>
-      <ul>
+      <ul className="font-extrabold">
         {items.map((item) => (
           <li>{item}</li>
         ))}
