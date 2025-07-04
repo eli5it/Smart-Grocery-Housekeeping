@@ -18,8 +18,8 @@ def create_app():
     def make_shell_context():
         # DO NOT MOVE imports
         # need to perform imports here to avoid circular dependency issue
-        from app.models import Item
-        return {'sa': sa, 'so': so, 'db': db, 'Item': Item}
+        from app.models import Ingredient, User
+        return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient, 'User': User}
 
     CORS(app)
     app.config.from_object(Config)
@@ -29,8 +29,8 @@ def create_app():
     migrate.init_app(app, db)
 
     # Import blueprints and register them
-    from app.routes.item import item_bp  
-    app.register_blueprint(item_bp)
+    from app.routes.ingredient import ingredient_bp  
+    app.register_blueprint(ingredient_bp )
 
     return app
 
