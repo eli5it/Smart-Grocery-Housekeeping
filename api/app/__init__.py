@@ -18,8 +18,8 @@ def create_app():
     def make_shell_context():
         # DO NOT MOVE imports
         # need to perform imports here to avoid circular dependency issue
-        from app.models import Ingredient, User
-        return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient, 'User': User}
+        from app.models import Ingredient, User, Recipe
+        return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient, 'User': User, 'recipe': Recipe}
 
     CORS(app)
     app.config.from_object(Config)
