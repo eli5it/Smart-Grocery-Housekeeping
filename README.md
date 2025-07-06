@@ -91,7 +91,3 @@ api/       # Flask backend
 ## 📄 License
 
 Licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss your ideas.
