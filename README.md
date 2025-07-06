@@ -14,7 +14,7 @@ npm install
 ### Create Python Virtual Environment
 
 ```bash
-cd ../api
+cd api
 python -m venv venv
 ```
 
