@@ -60,7 +60,7 @@ npm run dev
 
 ```bash
 cd api
-npm run api
+flask run
 ```
 
 **Note:** Ensure your Python virtual environment is activated before running the API server.
