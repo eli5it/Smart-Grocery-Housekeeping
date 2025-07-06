@@ -1,4 +1,5 @@
-Smart Grocery Housekeeping
+**Smart Grocery Housekeeping
+**
 
 A smart web application for managing your pantry, reducing waste, and discovering recipe ideas — powered by a React frontend and Flask backend.
 
@@ -6,8 +7,11 @@ A smart web application for managing your pantry, reducing waste, and discoverin
 
 1. Install Frontend Dependencies
 
+```bash
 cd frontend
 npm install
+```
+
 
 2. Create Python Virtual Environment
 
