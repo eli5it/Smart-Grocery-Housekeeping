@@ -16,7 +16,6 @@ import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as AppLayoutRouteRouteImport } from './routes/app/_layout/route'
-import { Route as AppLayoutSuggestionsRouteImport } from './routes/app/_layout/suggestions'
 import { Route as AppLayoutReportsRouteImport } from './routes/app/_layout/reports'
 import { Route as AppLayoutRecipesRouteImport } from './routes/app/_layout/recipes'
 import { Route as AppLayoutInventoryRouteImport } from './routes/app/_layout/inventory'
@@ -53,11 +52,6 @@ const authLoginRoute = authLoginRouteImport.update({
 const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
   id: '/_layout',
   getParentRoute: () => AppRoute,
-} as any)
-const AppLayoutSuggestionsRoute = AppLayoutSuggestionsRouteImport.update({
-  id: '/suggestions',
-  path: '/suggestions',
-  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
 const AppLayoutReportsRoute = AppLayoutReportsRouteImport.update({
   id: '/reports',
@@ -96,7 +90,6 @@ export interface FileRoutesByFullPath {
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
-  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -108,7 +101,6 @@ export interface FileRoutesByTo {
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
-  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -123,7 +115,6 @@ export interface FileRoutesById {
   '/app/_layout/inventory': typeof AppLayoutInventoryRoute
   '/app/_layout/recipes': typeof AppLayoutRecipesRoute
   '/app/_layout/reports': typeof AppLayoutReportsRoute
-  '/app/_layout/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,7 +129,6 @@ export interface FileRouteTypes {
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
-    | '/app/suggestions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -150,7 +140,6 @@ export interface FileRouteTypes {
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
-    | '/app/suggestions'
   id:
     | '__root__'
     | '/'
@@ -164,7 +153,6 @@ export interface FileRouteTypes {
     | '/app/_layout/inventory'
     | '/app/_layout/recipes'
     | '/app/_layout/reports'
-    | '/app/_layout/suggestions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -218,13 +206,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutRouteRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/_layout/suggestions': {
-      id: '/app/_layout/suggestions'
-      path: '/suggestions'
-      fullPath: '/app/suggestions'
-      preLoaderRoute: typeof AppLayoutSuggestionsRouteImport
-      parentRoute: typeof AppLayoutRouteRoute
-    }
     '/app/_layout/reports': {
       id: '/app/_layout/reports'
       path: '/reports'
@@ -269,7 +250,6 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutInventoryRoute: typeof AppLayoutInventoryRoute
   AppLayoutRecipesRoute: typeof AppLayoutRecipesRoute
   AppLayoutReportsRoute: typeof AppLayoutReportsRoute
-  AppLayoutSuggestionsRoute: typeof AppLayoutSuggestionsRoute
 }
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
@@ -278,7 +258,6 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutInventoryRoute: AppLayoutInventoryRoute,
   AppLayoutRecipesRoute: AppLayoutRecipesRoute,
   AppLayoutReportsRoute: AppLayoutReportsRoute,
-  AppLayoutSuggestionsRoute: AppLayoutSuggestionsRoute,
 }
 
 const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
