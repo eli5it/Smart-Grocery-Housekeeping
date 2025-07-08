@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuggestionsRouteImport } from './routes/suggestions'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as RecipesRouteImport } from './routes/recipes'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as GroceriesRouteImport } from './routes/groceries'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const ReportsRoute = ReportsRouteImport.update({
 const RecipesRoute = RecipesRouteImport.update({
   id: '/recipes',
   path: '/recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InventoryRoute = InventoryRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/groceries': typeof GroceriesRoute
   '/inventory': typeof InventoryRoute
+  '/login': typeof LoginRoute
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/groceries': typeof GroceriesRoute
   '/inventory': typeof InventoryRoute
+  '/login': typeof LoginRoute
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/groceries': typeof GroceriesRoute
   '/inventory': typeof InventoryRoute
+  '/login': typeof LoginRoute
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groceries'
     | '/inventory'
+    | '/login'
     | '/recipes'
     | '/reports'
     | '/suggestions'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groceries'
     | '/inventory'
+    | '/login'
     | '/recipes'
     | '/reports'
     | '/suggestions'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/groceries'
     | '/inventory'
+    | '/login'
     | '/recipes'
     | '/reports'
     | '/suggestions'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GroceriesRoute: typeof GroceriesRoute
   InventoryRoute: typeof InventoryRoute
+  LoginRoute: typeof LoginRoute
   RecipesRoute: typeof RecipesRoute
   ReportsRoute: typeof ReportsRoute
   SuggestionsRoute: typeof SuggestionsRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/recipes'
       fullPath: '/recipes'
       preLoaderRoute: typeof RecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inventory': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GroceriesRoute: GroceriesRoute,
   InventoryRoute: InventoryRoute,
+  LoginRoute: LoginRoute,
   RecipesRoute: RecipesRoute,
   ReportsRoute: ReportsRoute,
   SuggestionsRoute: SuggestionsRoute,
