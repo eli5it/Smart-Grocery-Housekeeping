@@ -28,7 +28,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Import blueprints and register them
+    # Import blueprints and register them 
     from app.routes.ingredient import ingredient_bp  
     app.register_blueprint(ingredient_bp )
 

@@ -8,160 +8,260 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as SuggestionsRouteImport } from './routes/suggestions'
-import { Route as ReportsRouteImport } from './routes/reports'
-import { Route as RecipesRouteImport } from './routes/recipes'
-import { Route as InventoryRouteImport } from './routes/inventory'
-import { Route as GroceriesRouteImport } from './routes/groceries'
-import { Route as IndexRouteImport } from './routes/index'
+import { createFileRoute } from '@tanstack/react-router'
 
-const SuggestionsRoute = SuggestionsRouteImport.update({
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as authRegisterRouteImport } from './routes/(auth)/register'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as AppLayoutRouteRouteImport } from './routes/app/_layout/route'
+import { Route as AppLayoutSuggestionsRouteImport } from './routes/app/_layout/suggestions'
+import { Route as AppLayoutReportsRouteImport } from './routes/app/_layout/reports'
+import { Route as AppLayoutRecipesRouteImport } from './routes/app/_layout/recipes'
+import { Route as AppLayoutInventoryRouteImport } from './routes/app/_layout/inventory'
+import { Route as AppLayoutGroceriesRouteImport } from './routes/app/_layout/groceries'
+import { Route as AppLayoutDashboardRouteImport } from './routes/app/_layout/dashboard'
+
+const AppRouteImport = createFileRoute('/app')()
+
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRegisterRoute = authRegisterRouteImport.update({
+  id: '/(auth)/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLayoutSuggestionsRoute = AppLayoutSuggestionsRouteImport.update({
   id: '/suggestions',
   path: '/suggestions',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const ReportsRoute = ReportsRouteImport.update({
+const AppLayoutReportsRoute = AppLayoutReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const RecipesRoute = RecipesRouteImport.update({
+const AppLayoutRecipesRoute = AppLayoutRecipesRouteImport.update({
   id: '/recipes',
   path: '/recipes',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const InventoryRoute = InventoryRouteImport.update({
+const AppLayoutInventoryRoute = AppLayoutInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const GroceriesRoute = GroceriesRouteImport.update({
+const AppLayoutGroceriesRoute = AppLayoutGroceriesRouteImport.update({
   id: '/groceries',
   path: '/groceries',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
+const AppLayoutDashboardRoute = AppLayoutDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/groceries': typeof GroceriesRoute
-  '/inventory': typeof InventoryRoute
-  '/recipes': typeof RecipesRoute
-  '/reports': typeof ReportsRoute
-  '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppLayoutRouteRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/app/dashboard': typeof AppLayoutDashboardRoute
+  '/app/groceries': typeof AppLayoutGroceriesRoute
+  '/app/inventory': typeof AppLayoutInventoryRoute
+  '/app/recipes': typeof AppLayoutRecipesRoute
+  '/app/reports': typeof AppLayoutReportsRoute
+  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/groceries': typeof GroceriesRoute
-  '/inventory': typeof InventoryRoute
-  '/recipes': typeof RecipesRoute
-  '/reports': typeof ReportsRoute
-  '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppLayoutRouteRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/app/dashboard': typeof AppLayoutDashboardRoute
+  '/app/groceries': typeof AppLayoutGroceriesRoute
+  '/app/inventory': typeof AppLayoutInventoryRoute
+  '/app/recipes': typeof AppLayoutRecipesRoute
+  '/app/reports': typeof AppLayoutReportsRoute
+  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/groceries': typeof GroceriesRoute
-  '/inventory': typeof InventoryRoute
-  '/recipes': typeof RecipesRoute
-  '/reports': typeof ReportsRoute
-  '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/_layout': typeof AppLayoutRouteRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
+  '/app/_layout/dashboard': typeof AppLayoutDashboardRoute
+  '/app/_layout/groceries': typeof AppLayoutGroceriesRoute
+  '/app/_layout/inventory': typeof AppLayoutInventoryRoute
+  '/app/_layout/recipes': typeof AppLayoutRecipesRoute
+  '/app/_layout/reports': typeof AppLayoutReportsRoute
+  '/app/_layout/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/groceries'
-    | '/inventory'
-    | '/recipes'
-    | '/reports'
-    | '/suggestions'
+    | '/app'
+    | '/login'
+    | '/register'
+    | '/app/dashboard'
+    | '/app/groceries'
+    | '/app/inventory'
+    | '/app/recipes'
+    | '/app/reports'
+    | '/app/suggestions'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/groceries'
-    | '/inventory'
-    | '/recipes'
-    | '/reports'
-    | '/suggestions'
+    | '/app'
+    | '/login'
+    | '/register'
+    | '/app/dashboard'
+    | '/app/groceries'
+    | '/app/inventory'
+    | '/app/recipes'
+    | '/app/reports'
+    | '/app/suggestions'
   id:
     | '__root__'
-    | '/'
-    | '/groceries'
-    | '/inventory'
-    | '/recipes'
-    | '/reports'
-    | '/suggestions'
+    | '/app'
+    | '/app/_layout'
+    | '/(auth)/login'
+    | '/(auth)/register'
+    | '/app/_layout/dashboard'
+    | '/app/_layout/groceries'
+    | '/app/_layout/inventory'
+    | '/app/_layout/recipes'
+    | '/app/_layout/reports'
+    | '/app/_layout/suggestions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  GroceriesRoute: typeof GroceriesRoute
-  InventoryRoute: typeof InventoryRoute
-  RecipesRoute: typeof RecipesRoute
-  ReportsRoute: typeof ReportsRoute
-  SuggestionsRoute: typeof SuggestionsRoute
+  AppRoute: typeof AppRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/suggestions': {
-      id: '/suggestions'
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/_layout': {
+      id: '/app/_layout'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppLayoutRouteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/_layout/suggestions': {
+      id: '/app/_layout/suggestions'
       path: '/suggestions'
-      fullPath: '/suggestions'
-      preLoaderRoute: typeof SuggestionsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/app/suggestions'
+      preLoaderRoute: typeof AppLayoutSuggestionsRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
-    '/reports': {
-      id: '/reports'
+    '/app/_layout/reports': {
+      id: '/app/_layout/reports'
       path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppLayoutReportsRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
-    '/recipes': {
-      id: '/recipes'
+    '/app/_layout/recipes': {
+      id: '/app/_layout/recipes'
       path: '/recipes'
-      fullPath: '/recipes'
-      preLoaderRoute: typeof RecipesRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/app/recipes'
+      preLoaderRoute: typeof AppLayoutRecipesRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
-    '/inventory': {
-      id: '/inventory'
+    '/app/_layout/inventory': {
+      id: '/app/_layout/inventory'
       path: '/inventory'
-      fullPath: '/inventory'
-      preLoaderRoute: typeof InventoryRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/app/inventory'
+      preLoaderRoute: typeof AppLayoutInventoryRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
-    '/groceries': {
-      id: '/groceries'
+    '/app/_layout/groceries': {
+      id: '/app/_layout/groceries'
       path: '/groceries'
-      fullPath: '/groceries'
-      preLoaderRoute: typeof GroceriesRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/app/groceries'
+      preLoaderRoute: typeof AppLayoutGroceriesRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+    '/app/_layout/dashboard': {
+      id: '/app/_layout/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppLayoutDashboardRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
     }
   }
 }
 
+interface AppLayoutRouteRouteChildren {
+  AppLayoutDashboardRoute: typeof AppLayoutDashboardRoute
+  AppLayoutGroceriesRoute: typeof AppLayoutGroceriesRoute
+  AppLayoutInventoryRoute: typeof AppLayoutInventoryRoute
+  AppLayoutRecipesRoute: typeof AppLayoutRecipesRoute
+  AppLayoutReportsRoute: typeof AppLayoutReportsRoute
+  AppLayoutSuggestionsRoute: typeof AppLayoutSuggestionsRoute
+}
+
+const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
+  AppLayoutDashboardRoute: AppLayoutDashboardRoute,
+  AppLayoutGroceriesRoute: AppLayoutGroceriesRoute,
+  AppLayoutInventoryRoute: AppLayoutInventoryRoute,
+  AppLayoutRecipesRoute: AppLayoutRecipesRoute,
+  AppLayoutReportsRoute: AppLayoutReportsRoute,
+  AppLayoutSuggestionsRoute: AppLayoutSuggestionsRoute,
+}
+
+const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
+  AppLayoutRouteRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  GroceriesRoute: GroceriesRoute,
-  InventoryRoute: InventoryRoute,
-  RecipesRoute: RecipesRoute,
-  ReportsRoute: ReportsRoute,
-  SuggestionsRoute: SuggestionsRoute,
+  AppRoute: AppRouteWithChildren,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
