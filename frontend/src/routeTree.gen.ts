@@ -12,6 +12,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as AppLayoutRouteRouteImport } from './routes/app/_layout/route'
@@ -33,6 +34,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any)
 const authRegisterRoute = authRegisterRouteImport.update({
   id: '/(auth)/register',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppLayoutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/app/': typeof AppIndexRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
   '/app/groceries': typeof AppLayoutGroceriesRoute
   '/app/inventory': typeof AppLayoutInventoryRoute
@@ -93,7 +100,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/app': typeof AppLayoutRouteRouteWithChildren
+  '/app': typeof AppIndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
@@ -110,6 +117,7 @@ export interface FileRoutesById {
   '/app/_layout': typeof AppLayoutRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/app/': typeof AppIndexRoute
   '/app/_layout/dashboard': typeof AppLayoutDashboardRoute
   '/app/_layout/groceries': typeof AppLayoutGroceriesRoute
   '/app/_layout/inventory': typeof AppLayoutInventoryRoute
@@ -124,6 +132,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/register'
+    | '/app/'
     | '/app/dashboard'
     | '/app/groceries'
     | '/app/inventory'
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/app/_layout'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/app/'
     | '/app/_layout/dashboard'
     | '/app/_layout/groceries'
     | '/app/_layout/inventory'
@@ -179,6 +189,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/(auth)/register': {
       id: '/(auth)/register'
@@ -270,10 +287,12 @@ const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
