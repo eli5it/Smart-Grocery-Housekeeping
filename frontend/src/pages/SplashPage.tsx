@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 const SplashPage = () => {
   return (
     <>
-      <div className="bg-gradient-to-b from-slate-900 to-slate-800 p-4 min-h-screen">
-        <h1 className="font-bold text-4xl text-center text-white text-lime-400">
+      <div className="bg-gradient-to-b from-slate-900 to-slate-800 p-20 min-h-screen">
+        <h1 className="font-bold text-4xl text-center text-white">
           Smart Grocery Housekeeping
         </h1>
         <main className="p-4 mt-8 flex flex-col items-center text-xl text-white">
