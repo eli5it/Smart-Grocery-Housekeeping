@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuggestionsRouteImport } from './routes/suggestions'
 import { Route as ReportsRouteImport } from './routes/reports'
@@ -16,7 +18,16 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as GroceriesRouteImport } from './routes/groceries'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppInventoryRouteImport } from './routes/app/inventory'
+import { Route as AppPathlessLayoutRouteImport } from './routes/app/_pathlessLayout'
 
+const AppRouteImport = createFileRoute('/app')()
+
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuggestionsRoute = SuggestionsRouteImport.update({
   id: '/suggestions',
   path: '/suggestions',
@@ -52,6 +63,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPathlessLayoutRoute = AppPathlessLayoutRouteImport.update({
+  id: '/_pathlessLayout',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +81,8 @@ export interface FileRoutesByFullPath {
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppPathlessLayoutRoute
+  '/app/inventory': typeof AppInventoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +92,8 @@ export interface FileRoutesByTo {
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppPathlessLayoutRoute
+  '/app/inventory': typeof AppInventoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +104,9 @@ export interface FileRoutesById {
   '/recipes': typeof RecipesRoute
   '/reports': typeof ReportsRoute
   '/suggestions': typeof SuggestionsRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/_pathlessLayout': typeof AppPathlessLayoutRoute
+  '/app/inventory': typeof AppInventoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +118,8 @@ export interface FileRouteTypes {
     | '/recipes'
     | '/reports'
     | '/suggestions'
+    | '/app'
+    | '/app/inventory'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +129,8 @@ export interface FileRouteTypes {
     | '/recipes'
     | '/reports'
     | '/suggestions'
+    | '/app'
+    | '/app/inventory'
   id:
     | '__root__'
     | '/'
@@ -109,6 +140,9 @@ export interface FileRouteTypes {
     | '/recipes'
     | '/reports'
     | '/suggestions'
+    | '/app'
+    | '/app/_pathlessLayout'
+    | '/app/inventory'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +153,18 @@ export interface RootRouteChildren {
   RecipesRoute: typeof RecipesRoute
   ReportsRoute: typeof ReportsRoute
   SuggestionsRoute: typeof SuggestionsRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/suggestions': {
       id: '/suggestions'
       path: '/suggestions'
@@ -172,8 +214,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/inventory': {
+      id: '/app/inventory'
+      path: '/inventory'
+      fullPath: '/app/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/_pathlessLayout': {
+      id: '/app/_pathlessLayout'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppPathlessLayoutRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
+
+interface AppRouteChildren {
+  AppPathlessLayoutRoute: typeof AppPathlessLayoutRoute
+  AppInventoryRoute: typeof AppInventoryRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppPathlessLayoutRoute: AppPathlessLayoutRoute,
+  AppInventoryRoute: AppInventoryRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -183,6 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecipesRoute: RecipesRoute,
   ReportsRoute: ReportsRoute,
   SuggestionsRoute: SuggestionsRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
