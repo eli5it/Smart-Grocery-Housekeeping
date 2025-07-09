@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import InventoryPage from "../../../pages/InventoryPage";
 
 export const Route = createFileRoute("/app/_layout/inventory")({
-  component: RouteComponent,
+  component: InventoryPage,
 });
-
-function RouteComponent() {
-  return (
-    <div className="font-extrabold text-red-300">Hello "/app/inventory"!</div>
-  );
-}
