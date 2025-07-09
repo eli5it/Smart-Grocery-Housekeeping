@@ -28,7 +28,6 @@ def get_product_info_by_barcode():
         product_info = {
             "image_url": res['image_url'],
             "product_name": res['product_name'].lower(),
-            "image_url": res['image_url']
         }
         # fetch associated ingredient for this product
         try:
@@ -39,6 +38,7 @@ def get_product_info_by_barcode():
                 print('error opening json')
                 abort(500, description="The server could not handle your request at this time. Please try again later")
 
+        product_info['barcode'] = barcode
         product_name = product_info.get('product_name', None)
         # presuming for now that product_name is always there
         # will likely need to add validation for the returned dict from the api
