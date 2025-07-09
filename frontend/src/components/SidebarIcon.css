@@ -1,0 +1,40 @@
+/**
+    Gen AI use citation for styling
+    https://chatgpt.com/share/686d7b4f-39d8-8012-8a7c-3294bc57a197
+**/
+.menu-icon {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu-icon .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: black;
+  transition: transform 0.3s ease, top 0.3s ease, bottom 0.3s ease;
+  border-radius: 2px;
+}
+
+.menu-icon .top {
+  top: 12px;
+  transform-origin: center;
+}
+
+.menu-icon .bottom {
+  bottom: 12px;
+  transform-origin: center;
+}
+
+.menu-icon.open .top {
+  transform: rotate(45deg);
+  top: 18px;
+}
+
+.menu-icon.open .bottom {
+  transform: rotate(-45deg);
+  bottom: 18px;
+}

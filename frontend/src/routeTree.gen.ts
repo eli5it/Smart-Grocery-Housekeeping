@@ -11,10 +11,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as AppLayoutRouteRouteImport } from './routes/app/_layout/route'
-import { Route as AppLayoutSuggestionsRouteImport } from './routes/app/_layout/suggestions'
 import { Route as AppLayoutReportsRouteImport } from './routes/app/_layout/reports'
 import { Route as AppLayoutRecipesRouteImport } from './routes/app/_layout/recipes'
 import { Route as AppLayoutInventoryRouteImport } from './routes/app/_layout/inventory'
@@ -27,6 +28,16 @@ const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
   getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
 } as any)
 const authRegisterRoute = authRegisterRouteImport.update({
   id: '/(auth)/register',
@@ -41,11 +52,6 @@ const authLoginRoute = authLoginRouteImport.update({
 const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
   id: '/_layout',
   getParentRoute: () => AppRoute,
-} as any)
-const AppLayoutSuggestionsRoute = AppLayoutSuggestionsRouteImport.update({
-  id: '/suggestions',
-  path: '/suggestions',
-  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
 const AppLayoutReportsRoute = AppLayoutReportsRouteImport.update({
   id: '/reports',
@@ -74,18 +80,20 @@ const AppLayoutDashboardRoute = AppLayoutDashboardRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/app': typeof AppLayoutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/app/': typeof AppIndexRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
   '/app/groceries': typeof AppLayoutGroceriesRoute
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
-  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesByTo {
-  '/app': typeof AppLayoutRouteRouteWithChildren
+  '/': typeof IndexRoute
+  '/app': typeof AppIndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
@@ -93,35 +101,37 @@ export interface FileRoutesByTo {
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
-  '/app/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/_layout': typeof AppLayoutRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/app/': typeof AppIndexRoute
   '/app/_layout/dashboard': typeof AppLayoutDashboardRoute
   '/app/_layout/groceries': typeof AppLayoutGroceriesRoute
   '/app/_layout/inventory': typeof AppLayoutInventoryRoute
   '/app/_layout/recipes': typeof AppLayoutRecipesRoute
   '/app/_layout/reports': typeof AppLayoutReportsRoute
-  '/app/_layout/suggestions': typeof AppLayoutSuggestionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/app'
     | '/login'
     | '/register'
+    | '/app/'
     | '/app/dashboard'
     | '/app/groceries'
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
-    | '/app/suggestions'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/app'
     | '/login'
     | '/register'
@@ -130,22 +140,23 @@ export interface FileRouteTypes {
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
-    | '/app/suggestions'
   id:
     | '__root__'
+    | '/'
     | '/app'
     | '/app/_layout'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/app/'
     | '/app/_layout/dashboard'
     | '/app/_layout/groceries'
     | '/app/_layout/inventory'
     | '/app/_layout/recipes'
     | '/app/_layout/reports'
-    | '/app/_layout/suggestions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
@@ -159,6 +170,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
     '/(auth)/register': {
       id: '/(auth)/register'
@@ -180,13 +205,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/app'
       preLoaderRoute: typeof AppLayoutRouteRouteImport
       parentRoute: typeof AppRoute
-    }
-    '/app/_layout/suggestions': {
-      id: '/app/_layout/suggestions'
-      path: '/suggestions'
-      fullPath: '/app/suggestions'
-      preLoaderRoute: typeof AppLayoutSuggestionsRouteImport
-      parentRoute: typeof AppLayoutRouteRoute
     }
     '/app/_layout/reports': {
       id: '/app/_layout/reports'
@@ -232,7 +250,6 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutInventoryRoute: typeof AppLayoutInventoryRoute
   AppLayoutRecipesRoute: typeof AppLayoutRecipesRoute
   AppLayoutReportsRoute: typeof AppLayoutReportsRoute
-  AppLayoutSuggestionsRoute: typeof AppLayoutSuggestionsRoute
 }
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
@@ -241,7 +258,6 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutInventoryRoute: AppLayoutInventoryRoute,
   AppLayoutRecipesRoute: AppLayoutRecipesRoute,
   AppLayoutReportsRoute: AppLayoutReportsRoute,
-  AppLayoutSuggestionsRoute: AppLayoutSuggestionsRoute,
 }
 
 const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
@@ -250,15 +266,18 @@ const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
