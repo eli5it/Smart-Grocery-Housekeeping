@@ -1,5 +1,3 @@
-import { Children } from "react";
-
 type ModalContainerProps = {
   close: () => void;
   children?: React.ReactNode;
