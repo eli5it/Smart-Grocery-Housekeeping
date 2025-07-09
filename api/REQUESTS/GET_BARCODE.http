@@ -1,0 +1,1 @@
+GET http://localhost:5000/api/barcode-lookup/?barcode=3017620425035
