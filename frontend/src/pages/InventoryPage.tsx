@@ -40,6 +40,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         ...pantryItems,
         { ...response.data, quantity: 1, barcode },
       ]);
+      alert("succesfully added item!");
     },
     onError: (err, barcode) => {
       // need to have user input missing information manually
@@ -65,6 +66,12 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
       if (!barcodeExists) {
         attemptedBarcodesRef.current.add(barcode);
         lookupMutation.mutate(barcode);
+      } else if (
+        pantryItems.some((pantryItem) => pantryItem.barcode === barcode)
+      ) {
+        // duplicate
+        //TODO replace these alerts with toast components
+        alert("already added item");
       }
     }
   };
@@ -78,11 +85,6 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
               Make sure the barcode is visible for your scan
             </h1>
             <BarcodeScanner width={500} height={500} onUpdate={updateHandler} />
-            <ul className="text-blue-700 text-lg">
-              {pantryItems.map((item) => (
-                <li key={item.barcode}>{item.product_name}</li>
-              ))}
-            </ul>
             <button className="text-white bg-blue-700 font-bold px-2 py-3 rounded-3xl mt-3">
               Close Camera
             </button>
