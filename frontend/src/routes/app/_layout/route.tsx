@@ -15,7 +15,7 @@ function RouteComponent() {
         </h1>
       </header>
       <Sidebar></Sidebar>
-      <main className="pl-[224px]">
+      <main className="px-4 py-2 md:pl-[224px]">
         <Outlet />
       </main>
     </div>

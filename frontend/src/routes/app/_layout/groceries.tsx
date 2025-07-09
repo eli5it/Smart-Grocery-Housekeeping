@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import GroceryPage from "../../../pages/GroceryPage";
 
 export const Route = createFileRoute("/app/_layout/groceries")({
-  component: RouteComponent,
+  component: GroceryPage,
 });
-
-function RouteComponent() {
-  return <div>Hello "/grocery"!</div>;
-}
