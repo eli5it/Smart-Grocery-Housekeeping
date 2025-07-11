@@ -58,7 +58,7 @@ const PantryItemList = ({ pantryItems }: PantryItemListProps) => {
 
     // on succesful change redirect to dashboard?
 
-    // on unsuccesful change,
+    // on unsuccesful change,display toast?
   };
 
   return (
