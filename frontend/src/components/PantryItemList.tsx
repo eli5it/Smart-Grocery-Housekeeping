@@ -52,21 +52,40 @@ const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
 };
 
 const PantryItemList = ({ pantryItems }: PantryItemListProps) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
+    // submit changes to the db
+    e.preventDefault();
+
+    // on succesful change redirect to dashboard?
+
+    // on unsuccesful change,
+  };
+
   return (
     <>
       <h2 className="font-bold text-3xl text-center mt-4">
         Edit Pantry Items below
       </h2>
-      <form>
-        <ul className="py-5 max-w-[400px] m-auto">
-          {pantryItems.map((pantryItem) => (
-            <PantryItemListElement
-              key={pantryItem.barcode}
-              pantryItem={pantryItem}
-            />
-          ))}
-        </ul>
-      </form>
+      {pantryItems.length > 0 && (
+        <form onSubmit={submitHandler}>
+          <ul className="py-5 max-w-[400px] m-auto">
+            {pantryItems.map((pantryItem) => (
+              <PantryItemListElement
+                key={pantryItem.barcode}
+                pantryItem={pantryItem}
+              />
+            ))}
+          </ul>
+          <div className="flex justify-center">
+            <button
+              className="bg-blue-500 text-white px-3 py-4 rounded-3xl font-bold"
+              type="submit"
+            >
+              Submit Changes
+            </button>
+          </div>
+        </form>
+      )}
     </>
   );
 };
