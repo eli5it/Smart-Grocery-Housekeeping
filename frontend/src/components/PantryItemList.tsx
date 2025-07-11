@@ -1,0 +1,74 @@
+import type { PantryItem } from "../lib/types";
+
+type PantryItemListProps = {
+  pantryItems: PantryItem[];
+};
+
+type PantryItemListElement = {
+  pantryItem: PantryItem;
+};
+
+const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
+  // image, Name          ,
+  //
+  //        IngredientName,
+  const { product_name, quantity, image_url, ingredient_name } = pantryItem;
+
+  return (
+    <li className="flex gap-4 items-center bg-gray-200 px-3 py-3">
+      <img
+        className="rounded-md h-20"
+        src={image_url}
+        alt={`A picture of ${product_name}`}
+      />
+      <div className="flex flex-col gap-2">
+        <label>
+          Product Name:
+          <input
+            className="block outline-blue-300 border border-black"
+            value={product_name}
+            type="text"
+          />
+        </label>
+        <label>
+          Ingredient Name:
+          <input
+            className="block outline-blue-300 border border-black"
+            value={ingredient_name}
+            type="text"
+          />
+        </label>
+        <label>
+          Quantity
+          <input
+            className="block outline-blue-300 border border-black"
+            value={quantity}
+            type="number"
+          />
+        </label>
+      </div>
+    </li>
+  );
+};
+
+const PantryItemList = ({ pantryItems }: PantryItemListProps) => {
+  return (
+    <>
+      <h2 className="font-bold text-3xl text-center mt-4">
+        Edit Pantry Items below
+      </h2>
+      <form>
+        <ul className="py-5 max-w-[400px] m-auto">
+          {pantryItems.map((pantryItem) => (
+            <PantryItemListElement
+              key={pantryItem.barcode}
+              pantryItem={pantryItem}
+            />
+          ))}
+        </ul>
+      </form>
+    </>
+  );
+};
+
+export default PantryItemList;

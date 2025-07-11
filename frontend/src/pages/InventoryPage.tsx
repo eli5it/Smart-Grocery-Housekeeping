@@ -4,15 +4,11 @@ import { cn } from "@udecode/cn";
 import BarcodeScanner from "react-qr-barcode-scanner";
 import ModalContainer from "../components/ModalContainer";
 import { useMutation } from "@tanstack/react-query";
+import type { ToastDetails } from "../lib/types";
+import type { PantryItem } from "../lib/types";
 import axios from "axios";
-
-type PantryItem = {
-  barcode: string;
-  product_name: string;
-  ingredient_name: string;
-  image_url: string;
-  quantity: number;
-};
+import Toaster from "../components/Toaster";
+import PantryItemList from "../components/PantryItemList";
 
 const CameraView = () => {
   return <></>;
@@ -25,6 +21,12 @@ type BarcodeViewProps = {
 
 const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
   const [displayCamera, setDisplayCamera] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastDetails, setShowToastDetails] = useState<ToastDetails>({
+    title: "",
+    description: "",
+  });
+
   // use ref instead of state prevent excessive re-renders when scanning barcodes
   const attemptedBarcodesRef = useRef(
     new Set<string>(pantryItems.map((item) => item.barcode))
@@ -40,7 +42,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         ...pantryItems,
         { ...response.data, quantity: 1, barcode },
       ]);
-      alert("succesfully added item!");
+      setShowToast(true);
+      setShowToastDetails({
+        title: `Added ${response.data.product_name} to pantry!`,
+        description: "",
+      });
     },
     onError: (err, barcode) => {
       // need to have user input missing information manually
@@ -52,6 +58,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         quantity: 1,
       };
       setPantryItems([...pantryItems, newPantryItem]);
+      setShowToast(true);
+      setShowToastDetails({
+        title: `Added pantry item with barcode ${barcode} to pantry!`,
+        description: "You will need to fill out the rest of it's details",
+      });
     },
   });
 
@@ -71,7 +82,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
       ) {
         // duplicate
         //TODO replace these alerts with toast components
-        alert("already added item");
+        setShowToast(true);
+        setShowToastDetails({
+          title: "Already added item to pantry",
+          description: "Add a new item?",
+        });
       }
     }
   };
@@ -105,6 +120,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
           Open camera
         </button>
       </div>
+      <Toaster
+        toastDetails={toastDetails}
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
     </>
   );
 };
@@ -161,11 +181,8 @@ const InventoryPage = () => {
         />
       )}
       {mode === "camera" && <CameraView />}
-      <ul>
-        {pantryItems.map((item) => (
-          <li key={item.barcode}>{item.product_name}</li>
-        ))}
-      </ul>
+
+      <PantryItemList pantryItems={pantryItems}></PantryItemList>
     </>
   );
 };
