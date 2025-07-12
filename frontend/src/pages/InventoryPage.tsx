@@ -1,34 +1,93 @@
 import ItemScanner from "../components/ItemScanner";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { cn } from "@udecode/cn";
 import BarcodeScanner from "react-qr-barcode-scanner";
 import ModalContainer from "../components/ModalContainer";
-
-type PantryItem = string;
+import { useMutation } from "@tanstack/react-query";
+import type { ToastDetails } from "../lib/types";
+import type { PantryItem } from "../lib/types";
+import axios from "axios";
+import Toaster from "../components/Toaster";
+import PantryItemList from "../components/PantryItemList";
 
 const CameraView = () => {
   return <></>;
 };
 
 type BarcodeViewProps = {
-  setPantryItems: React.Dispatch<React.SetStateAction<string[]>>;
+  setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
   pantryItems: PantryItem[];
 };
 
 const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
-  const [barcode, setBarcode] = useState<null | string>(null);
   const [displayCamera, setDisplayCamera] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastDetails, setShowToastDetails] = useState<ToastDetails>({
+    title: "",
+    description: "",
+  });
+
+  // use ref instead of state prevent excessive re-renders when scanning barcodes
+  const attemptedBarcodesRef = useRef(
+    new Set<string>(pantryItems.map((item) => item.barcode))
+  );
+  const lookupMutation = useMutation({
+    mutationFn: (barcode: string) => {
+      return axios.get<Omit<PantryItem, "quantity">>(
+        `/api/barcode-lookup/?barcode=${barcode}`
+      );
+    },
+    onSuccess: (response, barcode) => {
+      setPantryItems([
+        ...pantryItems,
+        { ...response.data, quantity: 1, barcode },
+      ]);
+      setShowToast(true);
+      setShowToastDetails({
+        title: `Added ${response.data.product_name} to pantry!`,
+        description: "",
+      });
+    },
+    onError: (err, barcode) => {
+      // need to have user input missing information manually
+      const newPantryItem: PantryItem = {
+        barcode,
+        product_name: "",
+        ingredient_name: "",
+        image_url: "",
+        quantity: 1,
+      };
+      setPantryItems([...pantryItems, newPantryItem]);
+      setShowToast(true);
+      setShowToastDetails({
+        title: `Added pantry item with barcode ${barcode} to pantry!`,
+        description: "You will need to fill out the rest of it's details",
+      });
+    },
+  });
+
   const clickHandler = () => {
     setDisplayCamera(true);
   };
 
   const updateHandler = (err: any, result: any) => {
     if (result) {
-      setBarcode(result.text);
-      if (!pantryItems.includes(result.text)) {
-        setPantryItems(pantryItems.concat(result.text));
+      const barcode: string = result.text;
+      const barcodeExists = attemptedBarcodesRef.current.has(barcode);
+      if (!barcodeExists) {
+        attemptedBarcodesRef.current.add(barcode);
+        lookupMutation.mutate(barcode);
+      } else if (
+        pantryItems.some((pantryItem) => pantryItem.barcode === barcode)
+      ) {
+        // duplicate
+        //TODO replace these alerts with toast components
+        setShowToast(true);
+        setShowToastDetails({
+          title: "Already added item to pantry",
+          description: "Add a new item?",
+        });
       }
-      // need to fetch ingredient info and add to list
     }
   };
 
@@ -41,11 +100,6 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
               Make sure the barcode is visible for your scan
             </h1>
             <BarcodeScanner width={500} height={500} onUpdate={updateHandler} />
-            <ul className="text-blue-700 text-lg">
-              {pantryItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
             <button className="text-white bg-blue-700 font-bold px-2 py-3 rounded-3xl mt-3">
               Close Camera
             </button>
@@ -66,6 +120,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
           Open camera
         </button>
       </div>
+      <Toaster
+        toastDetails={toastDetails}
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
     </>
   );
 };
@@ -122,11 +181,8 @@ const InventoryPage = () => {
         />
       )}
       {mode === "camera" && <CameraView />}
-      <ul>
-        {pantryItems.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+
+      <PantryItemList pantryItems={pantryItems}></PantryItemList>
     </>
   );
 };

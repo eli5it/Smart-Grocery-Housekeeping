@@ -32,11 +32,15 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    # Import blueprints and register them
+    # Import blueprints and register them 
     from app.routes.ingredient import ingredient_bp
+    from app.routes.barcode import barcode_bp
+    from app.errors.handlers import errors as errors_bp
     from app.routes.login import login_bp
 
     app.register_blueprint(ingredient_bp)
+    app.register_blueprint(errors_bp)
+    app.register_blueprint(barcode_bp)
     app.register_blueprint(login_bp, url_prefix='/api')
 
     return app
