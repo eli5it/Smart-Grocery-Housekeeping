@@ -37,4 +37,9 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"msg": "User created successfully"}), 201
+    token = create_access_token(identity=new_user.id)
+
+    return jsonify({
+        "msg": "User created successfully",
+        "access_token": token
+    }), 201
