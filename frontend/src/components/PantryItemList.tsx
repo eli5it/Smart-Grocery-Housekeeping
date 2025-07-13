@@ -1,4 +1,5 @@
 import type { PantryItem } from "../lib/types";
+import { useState } from "react";
 
 type PantryItemListProps = {
   pantryItems: PantryItem[];
@@ -12,7 +13,15 @@ const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
   // image, Name          ,
   //
   //        IngredientName,
-  const { product_name, quantity, image_url, ingredient_name } = pantryItem;
+  const {
+    product_name,
+    quantity: quantityItem,
+    image_url,
+    ingredient_name,
+  } = pantryItem;
+  const [productName, setProductName] = useState(product_name);
+  const [quantity, setQuantity] = useState(quantityItem);
+  const [ingredientName, setIngredientName] = useState(ingredient_name);
 
   return (
     <li className="flex gap-4 items-center bg-gray-200 px-3 py-3">
@@ -26,7 +35,8 @@ const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
           Product Name:
           <input
             className="block outline-blue-300 border border-black"
-            value={product_name}
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
             type="text"
           />
         </label>
@@ -34,7 +44,8 @@ const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
           Ingredient Name:
           <input
             className="block outline-blue-300 border border-black"
-            value={ingredient_name}
+            value={ingredientName}
+            onChange={(e) => setIngredientName(e.target.value)}
             type="text"
           />
         </label>
@@ -44,6 +55,7 @@ const PantryItemListElement = ({ pantryItem }: PantryItemListElement) => {
             className="block outline-blue-300 border border-black"
             value={quantity}
             type="number"
+            onChange={(e) => setQuantity(Number(e.target.value))}
           />
         </label>
       </div>
