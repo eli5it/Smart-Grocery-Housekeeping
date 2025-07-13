@@ -1,12 +1,28 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "@tanstack/react-router";
 
 const LoginForm = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate({
+    from: "/login",
+  });
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    // let React handle the form submission
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // let React handle the form submission
+    try {
+      const res = await axios.post("/api/login", {
+        username,
+        password,
+      });
+      localStorage.setItem("access_token", res.data.access_token);
+      console.log("redirecting");
+      navigate({
+        to: "/app/dashboard",
+      });
+    } catch (err) {}
   };
 
   return (
@@ -26,7 +42,7 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           name="password"
-          type="text"
+          type="password"
         ></input>
         <button className="bg-violet-900 mt-3 rounded-2xl px-4 py-1">
           Submit

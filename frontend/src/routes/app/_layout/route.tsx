@@ -1,8 +1,30 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Sidebar from "../../../components/Sidebar";
+import { redirect } from "@tanstack/react-router";
+import axios from "axios";
 
 export const Route = createFileRoute("/app/_layout")({
   component: RouteComponent,
+  beforeLoad: async ({}) => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+
+    try {
+      await axios.get("/api/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+  },
 });
 
 // this component contains a template saved by all /app subroutes
