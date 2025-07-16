@@ -21,8 +21,9 @@ def create_app():
     def make_shell_context():
         # DO NOT MOVE imports
         # need to perform imports here to avoid circular dependency issue
-        from app.models import Ingredient, User, Recipe
-        return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient,'User': User, 'recipe': Recipe}
+        from app.models import Ingredient, User, Recipe, PantryItem
+        return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient,
+                'User': User, 'recipe': Recipe, 'PantryItem': PantryItem}
 
     CORS(app)
     app.config.from_object(Config)
@@ -32,7 +33,7 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    # Import blueprints and register them 
+    # Import blueprints and register them
     from app.routes.ingredient import ingredient_bp
     from app.routes.barcode import barcode_bp
     from app.errors.handlers import errors as errors_bp
