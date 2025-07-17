@@ -1,4 +1,5 @@
 from app import db
+from app.models.pantry_entry import PantryEntry
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
@@ -11,5 +12,10 @@ class User(db.Model):
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(128),
                                                      nullable=False)
 
+    pantry_entries: so.WriteOnlyMapped['PantryEntry'] = so.relationship(
+        back_populates='user',
+        cascade='all, delete-orphan'
+    )
+
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<User {self.username}>'
