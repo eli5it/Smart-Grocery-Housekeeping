@@ -1,16 +1,44 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "@tanstack/react-router";
+
+type RegisterResponse = {
+  msg: string;
+  access_token: string;
+};
 
 const RegisterForm = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate({
+    from: "/register",
+  });
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     // let React handle the form submission
     e.preventDefault();
 
     if (password !== confirmPassword) {
       alert("Passwords don't match my friend!");
+      return;
+    }
+
+    // if passwords match
+    try {
+      const res = await axios.post<RegisterResponse>("/api/register", {
+        username,
+        password,
+      });
+
+      const data = res.data;
+      localStorage.setItem("access_token", data.access_token);
+      navigate({
+        to: "/app/dashboard",
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -34,7 +62,7 @@ const RegisterForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           name="password"
-          type="text"
+          type="password"
         ></input>
         <label htmlFor="confirm-password">Confirm password</label>
         <input
@@ -42,7 +70,7 @@ const RegisterForm = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           name="confirm-password"
-          type="text"
+          type="password"
         ></input>
         <button className="bg-violet-900 mt-3 rounded-2xl px-4 py-1">
           Submit
