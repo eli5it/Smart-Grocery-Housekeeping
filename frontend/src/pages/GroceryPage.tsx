@@ -1,7 +1,7 @@
 const GroceryPage = () => {
   return (
     <>
-      <h1 className="font-bold text-3xl">Groceries</h1>
+      <h1 className="font-bold text-3xl text-center md:text-left">Groceries</h1>
     </>
   );
 };

@@ -7,7 +7,7 @@ from app.models import Ingredient
 app = create_app()
 app.app_context().push()
 
-df = pd.read_csv('api/data/recipes_ingredients_small.csv')
+df = pd.read_csv('./data/recipes_ingredients_small.csv')
 
 all_ingredients = set()
 for row in df['Ingredients'].dropna():

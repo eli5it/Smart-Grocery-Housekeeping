@@ -9,9 +9,15 @@ import type { PantryItem } from "../lib/types";
 import axios from "axios";
 import Toaster from "../components/Toaster";
 import PantryItemList from "../components/PantryItemList";
+import PantryItemListElement from "../components/PantryItemListElement";
 
 const CameraView = () => {
-  return <></>;
+  return (
+    <>
+      <div className="w-40 h-40 rounded-lg bg-gray-500 m-auto"></div>
+      <p className="text-center">Upload Image above</p>
+    </>
+  );
 };
 
 type BarcodeViewProps = {
@@ -29,19 +35,17 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
 
   // use ref instead of state prevent excessive re-renders when scanning barcodes
   const attemptedBarcodesRef = useRef(
-    new Set<string>(pantryItems.map((item) => item.barcode))
+    new Set<string>(
+      //@ts-ignore
+      pantryItems.filter((item) => item.barcode).map((item) => item?.barcode)
+    )
   );
   const lookupMutation = useMutation({
     mutationFn: (barcode: string) => {
-      return axios.get<Omit<PantryItem, "quantity">>(
-        `/api/barcode-lookup/?barcode=${barcode}`
-      );
+      return axios.get<PantryItem>(`/api/barcode-lookup/?barcode=${barcode}`);
     },
     onSuccess: (response, barcode) => {
-      setPantryItems([
-        ...pantryItems,
-        { ...response.data, quantity: 1, barcode },
-      ]);
+      setPantryItems([...pantryItems, { ...response.data, barcode }]);
       setShowToast(true);
       setShowToastDetails({
         title: `Added ${response.data.product_name} to pantry!`,
@@ -55,7 +59,6 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         product_name: "",
         ingredient_name: "",
         image_url: "",
-        quantity: 1,
       };
       setPantryItems([...pantryItems, newPantryItem]);
       setShowToast(true);
@@ -80,8 +83,6 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
       } else if (
         pantryItems.some((pantryItem) => pantryItem.barcode === barcode)
       ) {
-        // duplicate
-        //TODO replace these alerts with toast components
         setShowToast(true);
         setShowToastDetails({
           title: "Already added item to pantry",
@@ -129,11 +130,29 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
   );
 };
 
-const ManualView = () => {
-  return <></>;
+type ManualViewProps = {
+  setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
 };
 
-const ItemsList = () => {};
+const ManualView = ({ setPantryItems }: ManualViewProps) => {
+  const newPantryItem: PantryItem = {
+    barcode: "",
+    product_name: "",
+    ingredient_name: "",
+  };
+
+  return (
+    <>
+      <div className="flex justify-center">
+        <PantryItemListElement
+          setPantryItems={setPantryItems}
+          pantryItem={newPantryItem}
+          mode="new"
+        />
+      </div>
+    </>
+  );
+};
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"camera" | "barcode" | "manual">("barcode");
@@ -142,8 +161,10 @@ const InventoryPage = () => {
 
   return (
     <>
-      <h1 className="font-bold text-3xl">Add a new item</h1>
-      <div className="flex px-4 gap-2 font-semibold my-3">
+      <h1 className="text-center font-bold text-3xl md:text-left">
+        Add a new item
+      </h1>
+      <div className="flex px-4 gap-2 font-semibold my-3 justify-center">
         <button
           className={cn("", {
             "text-blue-600": mode === "barcode",
@@ -173,7 +194,7 @@ const InventoryPage = () => {
           Camera
         </button>
       </div>
-      {mode === "manual" && <ManualView />}
+      {mode === "manual" && <ManualView setPantryItems={setPantryItems} />}
       {mode === "barcode" && (
         <BarcodeView
           setPantryItems={setPantryItems}
@@ -181,8 +202,15 @@ const InventoryPage = () => {
         />
       )}
       {mode === "camera" && <CameraView />}
-
-      <PantryItemList pantryItems={pantryItems}></PantryItemList>
+      {pantryItems.length !== 0 && (
+        <h3 className="font-bold text-2xl text-center py-2">
+          New Pantry items
+        </h3>
+      )}
+      <PantryItemList
+        setPantryItems={setPantryItems}
+        pantryItems={pantryItems}
+      ></PantryItemList>
     </>
   );
 };
