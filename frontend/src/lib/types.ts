@@ -4,9 +4,8 @@ export type ToastDetails = {
 };
 
 export type PantryItem = {
-  barcode: string;
+  barcode?: string;
   product_name: string;
   ingredient_name: string;
-  image_url: string;
-  quantity: number;
+  image_url?: string;
 };
