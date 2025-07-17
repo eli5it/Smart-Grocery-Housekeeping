@@ -7,9 +7,7 @@ import enum
 
 class PantryStatus(enum.StrEnum):
     IN_STOCK = "in_stock"
-    LOW = "low"
     OUT_OF_STOCK = "out_of_stock"
-    EXPIRED = "expired"
 
 
 class PantryEntry(db.Model):
