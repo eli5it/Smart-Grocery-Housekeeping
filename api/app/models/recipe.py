@@ -1,7 +1,7 @@
 from app import db
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from models.recipe_ingredient import RecipeIngredient
+from app.models.recipe_ingredient import RecipeIngredient
 
 
 class Recipe(db.Model):
