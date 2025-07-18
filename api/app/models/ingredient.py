@@ -1,5 +1,6 @@
 from app import db
 from app.models.pantry_entry import PantryEntry
+from app.models.recipe_ingredient import RecipeIngredient
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 

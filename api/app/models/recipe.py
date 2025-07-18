@@ -1,7 +1,7 @@
 from app import db
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-
+from models.recipe_ingredient import RecipeIngredient
 
 
 class Recipe(db.Model):
@@ -9,7 +9,9 @@ class Recipe(db.Model):
     name: so.Mapped[str] = so.mapped_column(
         sa.String(64), index=True, unique=True
     )
-    description: so.Mapped[dict] = so.mapped_column(sa.JSON, nullable=True)
+    instructions: so.Mapped[list[str]] = so.mapped_column(
+        sa.JSON, nullable=True
+    )
     ingredients: so.Mapped[list[str]] = so.mapped_column(
         sa.JSON, nullable=True
     )

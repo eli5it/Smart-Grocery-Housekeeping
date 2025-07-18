@@ -1,6 +1,10 @@
 from app import db
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+import typing
+if typing.TYPE_CHECKING:
+    from app.models.ingredient import Ingredient
+    from app.models.recipe import Recipe
 
 
 class RecipeIngredient(db.Model):
@@ -24,4 +28,7 @@ class RecipeIngredient(db.Model):
     )
 
     def __repr__(self):
-        return f'<RecipeIngredient {self.ingredient_id} in Recipe {self.recipe_id}>'
+        return (
+            f'<RecipeIngredient {self.ingredient_id} in Recipe '
+            f'{self.recipe_id}>'
+        )
