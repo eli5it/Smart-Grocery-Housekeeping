@@ -6,7 +6,7 @@ import sqlalchemy.orm as so
 class Recipe(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(
-        sa.String(64), index=True, unique=True
+        sa.String(64), index=True
     )
     description: so.Mapped[dict] = so.mapped_column(sa.JSON, nullable=True)
     ingredients: so.Mapped[list[str]] = so.mapped_column(
