@@ -3,6 +3,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 
+
 class Recipe(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(

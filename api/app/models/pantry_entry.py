@@ -3,6 +3,10 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from datetime import date
 import enum
+import typing
+if typing.TYPE_CHECKING:
+    from app.models.ingredient import Ingredient
+    from app.models.user import User
 
 
 class PantryStatus(enum.StrEnum):
