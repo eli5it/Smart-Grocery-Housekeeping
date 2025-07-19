@@ -33,7 +33,7 @@ const PantryItemListElement = ({
 
   return (
     <li className="bg-gray-200 px-3 py-3 max-w-[400px]">
-      <div className="flex items-center gap-4">
+      <form className="flex items-center gap-4">
         {image_url ? (
           <img
             className="rounded-md w-20 h-20"
@@ -63,7 +63,7 @@ const PantryItemListElement = ({
             />
           </label>
         </div>
-      </div>
+      </form>
       <div className="flex justify-center mt-5">
         <button
           onClick={duplicateItem}
