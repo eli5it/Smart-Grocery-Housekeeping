@@ -22,7 +22,7 @@ const PantryItemList = ({
   return (
     <>
       {pantryItems.length > 0 && (
-        <form onSubmit={submitHandler}>
+        <div>
           <ul className="py-5 max-w-[400px] m-auto">
             {pantryItems.map((pantryItem) => (
               <PantryItemListElement
@@ -32,15 +32,8 @@ const PantryItemList = ({
               />
             ))}
           </ul>
-          <div className="flex justify-center">
-            <button
-              className="bg-blue-500 text-white px-3 py-4 rounded-3xl font-bold"
-              type="submit"
-            >
-              Submit Changes
-            </button>
-          </div>
-        </form>
+          <div className="flex justify-center"></div>
+        </div>
       )}
     </>
   );

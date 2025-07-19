@@ -18,8 +18,8 @@ db.create_all()
 try:
     with open(recipe_file_path, 'r') as file:
          for recipe_dict in ijson.items(file, 'item'):
-            ner_string = recipe_dict['NER']
-            recipe_name = recipe_dict['title']
+            ner_string = recipe_dict['NER'].lower()
+            recipe_name = recipe_dict['title'].lower()
             ners = json.loads(ner_string)
             ingredients = []
             # add ingredients
@@ -32,8 +32,9 @@ try:
                     db.session.add(ingredient)
                 ingredients.append(ingredient)
             
-
-            recipe = Recipe(name = recipe_name)
+            json_ingredients = json.loads(recipe_dict['ingredients'])
+            json_directions = json.loads(recipe_dict['directions'])
+            recipe = Recipe(name = recipe_name, ingredients = json_ingredients, instructions = json_directions)
             db.session.add(recipe)
             # make sure recipe id is not None
             db.session.flush()

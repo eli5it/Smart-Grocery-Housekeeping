@@ -159,6 +159,22 @@ const InventoryPage = () => {
   // will store all scanned / manually added items
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
 
+  const pantryMutation = useMutation({
+    mutationFn: () => {
+      const token = localStorage.getItem("access_token");
+
+      return axios.post("/api/pantry", pantryItems[0], {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+  });
+
+  const addPantryItem = () => {
+    pantryMutation.mutate();
+  };
+
   return (
     <>
       <h1 className="text-center font-bold text-3xl md:text-left">
@@ -211,6 +227,16 @@ const InventoryPage = () => {
         setPantryItems={setPantryItems}
         pantryItems={pantryItems}
       ></PantryItemList>
+      {pantryItems.length !== 0 && (
+        <div className="flex justify-center">
+          <button
+            onClick={addPantryItem}
+            className="bg-blue-600 text-white px-5 py-3 rounded-lg"
+          >
+            Submit Changes
+          </button>
+        </div>
+      )}
     </>
   );
 };
