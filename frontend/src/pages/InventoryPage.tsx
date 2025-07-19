@@ -10,6 +10,7 @@ import axios from "axios";
 import Toaster from "../components/Toaster";
 import PantryItemList from "../components/PantryItemList";
 import PantryItemListElement from "../components/PantryItemListElement";
+import { useNavigate } from "@tanstack/react-router";
 
 const CameraView = () => {
   return (
@@ -141,6 +142,10 @@ const ManualView = ({ setPantryItems }: ManualViewProps) => {
     ingredient_name: "",
   };
 
+  const navigate = useNavigate({
+    from: "/login",
+  });
+
   return (
     <>
       <div className="flex justify-center">
@@ -163,13 +168,28 @@ const InventoryPage = () => {
     mutationFn: () => {
       const token = localStorage.getItem("access_token");
 
-      return axios.post("/api/pantry", pantryItems[0], {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      return axios.post(
+        "/api/pantry",
+        {
+          name: pantryItems[0].ingredient_name,
+          product_name: pantryItems[0].product_name,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      alert("succesfully added ingredient to DB");
+      navigate({
+        to: "/app/dashboard",
       });
     },
   });
+
+  const navigate = useNavigate({ from: "/app/inventory" });
 
   const addPantryItem = () => {
     pantryMutation.mutate();
