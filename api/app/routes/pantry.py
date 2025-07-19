@@ -6,10 +6,14 @@ from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus
 from app.schemas import PantryEntrySchema
-
+import json
+from pydantic import BaseModel, ValidationError
+from typing import List, Optional
 
 pantry_bp = Blueprint('pantry', __name__)
 pantry_entry_schema = PantryEntrySchema(many=True)
+
+
 
 
 @pantry_bp.route('/pantry', methods=['GET'])
@@ -23,40 +27,69 @@ def get_pantry():
     return jsonify(pantry_entry_schema.dump(pantry_items)), 200
 
 
+
+class NewPantryEntry(BaseModel):
+    name: str
+    product_name: Optional[str] = None
+    expiration_date: Optional[str] = None
+
+# defines the shape of json expected from frontend
+class Payload(BaseModel):
+    pantry_entries: List[NewPantryEntry]
+
 @pantry_bp.route('/pantry', methods=['POST'])
 @jwt_required()
 def add_pantry_entry():
     user_id = get_jwt_identity()
-    data = request.get_json()
 
-    ingredient_id = data.get('ingredient_id')
-    ingredient_name = data.get('name')
-    expiration_date = data.get('expiration_date')
+    try:
+        # validate payload
+        payload = Payload(**request.get_json())
+       
+        
+    except ValidationError as e:
+        return jsonify({
+            'message' : "Invalid payload", 'error': e.errors()
+        }), 400
+    
+    ingredient_names = list(map (lambda entry: entry.name, payload.pantry_entries))
+    query = sa.select(Ingredient).filter(Ingredient.name.in_(ingredient_names) )
+    existing_ingredients = db.session.scalars(query).all()
+    ingredient_map = {}
 
-    if not ingredient_name:
-        return jsonify({"msg": "Ingredient Name is required"}), 400
+    for ingredient in existing_ingredients:
+        ingredient_map[ingredient.name] = ingredient
 
-    ingredient = Ingredient.query.filter(
-        sa.func.lower(Ingredient.id) == ingredient_id
-    ).first()
-    if not ingredient:
-        ingredient = Ingredient(name=ingredient_name)
-        db.session.add(ingredient)
-        db.session.flush()
 
-    entry = PantryEntry(
-        ingredient_id=ingredient.id,
-        user_id=user_id,
-        expiration_date=(
-            date.fromisoformat(expiration_date)
-            if expiration_date else None
-        )
-    )
+    for pantry_entry in payload.pantry_entries:
+        ingredient_name = pantry_entry.name
+        if not ingredient_name in ingredient_map:
+            new_ingredient = Ingredient(name = ingredient_name)
+            ingredient_map[new_ingredient.name] = new_ingredient
+            db.session.add(new_ingredient)
+    
 
-    db.session.add(entry)
+
+    # make ingredient primary keys available
+    db.session.flush()
+
+    for pantry_entry in payload.pantry_entries:
+        ingredient_name = pantry_entry.name
+        expiration_date = pantry_entry.expiration_date
+        new_entry = PantryEntry(
+            ingredient_id= ingredient_map[ingredient_name].id,
+            user_id=user_id,
+            expiration_date=(
+                date.fromisoformat(expiration_date)
+                if expiration_date else None
+        ))
+        db.session.add(new_entry)
+    
     db.session.commit()
 
-    return jsonify({"msg": "Pantry entry added successfully"}), 201
+    return jsonify({"msg": "Pantry entries added successfully"}), 201
+    
+       
 
 
 @pantry_bp.route('/pantry/<int:entry_id>', methods=['DELETE'])
