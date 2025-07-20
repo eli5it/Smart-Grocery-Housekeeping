@@ -9,7 +9,8 @@ from app.schemas import PantryEntrySchema
 
 
 pantry_bp = Blueprint('pantry', __name__)
-pantry_entry_schema = PantryEntrySchema(many=True)
+pantry_entry_schema = PantryEntrySchema()
+pantry_entries_schema = PantryEntrySchema(many=True)
 
 
 @pantry_bp.route('/pantry', methods=['GET'])
@@ -20,7 +21,7 @@ def get_pantry():
         user_id=user_id,
         status=PantryStatus.IN_STOCK).all()
 
-    return jsonify(pantry_entry_schema.dump(pantry_items)), 200
+    return jsonify(pantry_entries_schema.dump(pantry_items)), 200
 
 
 @pantry_bp.route('/pantry', methods=['POST'])
@@ -85,7 +86,7 @@ def update_pantry_entry(entry_id):
 
     if 'status' in data:
         try:
-            pantry_entry.status = PantryStatus[data['status']]
+            pantry_entry.status = PantryStatus(data['status'])
         except ValueError:
             return jsonify({"msg": "Invalid status"}), 400
 
