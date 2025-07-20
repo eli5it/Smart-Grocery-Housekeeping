@@ -167,13 +167,13 @@ const InventoryPage = () => {
   const pantryMutation = useMutation({
     mutationFn: () => {
       const token = localStorage.getItem("access_token");
-
+      const newPantryItems = pantryItems.map((item) => ({
+        name: item.ingredient_name,
+        product_name: item.product_name,
+      }));
       return axios.post(
         "/api/pantry",
-        {
-          name: pantryItems[0].ingredient_name,
-          product_name: pantryItems[0].product_name,
-        },
+        { pantry_entries: newPantryItems },
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -14,14 +14,57 @@ def auth_headers(client, test_user):
     return {'Authorization': f'Bearer {token}'}
 
 
-def add_pantry_entry(client, auth_headers):
-    data = {
+def test_add_pantry_entry(client, auth_headers):
+    """Tests adding one valid pantry_entry that does not exist in the db"""
+    data = { 
+        "pantry_entries" : [{
         'name': 'Test Ingredient',
-        'expiration_date': '2024-12-31'
+        'expiration_date': '2024-12-31',
+        'product_name' : 'Test Product'
+    }]
     }
+        
     response = client.post('/api/pantry', json=data, headers=auth_headers)
     assert response.status_code == 201
-    assert response.get_json()['msg'] == 'Pantry entry added successfully'
+    assert response.get_json()['msg'] == 'Pantry entries added successfully'
+
+
+def test_add_multiple_pantry_entries(client, auth_headers):
+    """Tests adding multiple valid pantry entries"""
+    data = { 
+        "pantry_entries" : [{
+        'name': 'Test Ingredient',
+        'expiration_date': '2024-12-31',
+        'product_name' : 'Test Product'
+    }, 
+    {
+        'name': 'Test Ingredient 2',
+        'expiration_date': '2024-12-23',
+        'product_name' : 'Test Product 2'
+    }]}
+
+    response = client.post('/api/pantry', json=data, headers=auth_headers)
+    assert response.status_code == 201
+    assert response.get_json()['msg'] == 'Pantry entries added successfully'
+
+def test_add_invalid_pantry_entries(client, auth_headers):
+    """Test should fail when an invalid pantry entry is in the data"""
+    data = { 
+        "pantry_entries" : [{
+        'name': 'Test Ingredient',
+        'expiration_date': '2024-12-31',
+        'product_name' : 'Test Product'
+    }, 
+    {
+        'fname': 'Test Ingredient 2',
+        'expiration_date': '2024-12-23',
+        'product_name' : 'Test Product 2'
+    }]}
+
+    response = client.post('/api/pantry', json=data, headers=auth_headers)
+    assert response.status_code == 400
+
+
 
 
 def test_delete_pantry_entry(client, auth_headers, test_user):
