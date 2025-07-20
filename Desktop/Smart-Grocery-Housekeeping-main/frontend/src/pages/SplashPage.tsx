@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
+//test comment
+
 const SplashPage = () => {
   return (
     <div className="bg-[#FDFCF5] min-h-screen flex flex-col items-center px-6 py-12">
