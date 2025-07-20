@@ -51,8 +51,8 @@ def test_update_pantry_entry(client, auth_headers, test_user):
     db.session.commit()
 
     response = client.patch(f'/api/pantry/{entry.id}', json={
-        'status': 'OUT_OF_STOCK'
+        'status': 'out_of_stock'
     }, headers=auth_headers)
 
     assert response.status_code == 200
-    assert response.get_json()['status'] == PantryStatus.OUT_OF_STOCK
+    assert response.get_json()['status'] == PantryStatus.OUT_OF_STOCK.value

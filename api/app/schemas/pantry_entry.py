@@ -1,6 +1,7 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
-from app.models.pantry_entry import PantryEntry
+from marshmallow import fields
+from app.models.pantry_entry import PantryEntry, PantryStatus
 from app.schemas.ingredient import IngredientSchema
 
 
@@ -11,3 +12,8 @@ class PantryEntrySchema(SQLAlchemyAutoSchema):
         include_fk = True
 
     ingredient = Nested(IngredientSchema)
+
+    status = fields.Function(
+        lambda obj: obj.status.value,
+        deserialize=lambda value: PantryStatus(value)
+    )
