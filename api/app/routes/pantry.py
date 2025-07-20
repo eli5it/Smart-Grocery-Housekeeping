@@ -11,7 +11,8 @@ from pydantic import BaseModel, ValidationError
 from typing import List, Optional
 
 pantry_bp = Blueprint('pantry', __name__)
-pantry_entry_schema = PantryEntrySchema(many=True)
+pantry_entry_schema = PantryEntrySchema()
+pantry_entries_schema = PantryEntrySchema(many=True)
 
 
 
@@ -24,7 +25,7 @@ def get_pantry():
         user_id=user_id,
         status=PantryStatus.IN_STOCK).all()
 
-    return jsonify(pantry_entry_schema.dump(pantry_items)), 200
+    return jsonify(pantry_entries_schema.dump(pantry_items)), 200
 
 
 
@@ -118,7 +119,7 @@ def update_pantry_entry(entry_id):
 
     if 'status' in data:
         try:
-            pantry_entry.status = PantryStatus[data['status']]
+            pantry_entry.status = PantryStatus(data['status'])
         except ValueError:
             return jsonify({"msg": "Invalid status"}), 400
 
