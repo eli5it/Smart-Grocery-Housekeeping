@@ -1,8 +1,0 @@
-POST http://localhost:5000/api/pantry
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1Mjk2MTUxMCwianRpIjoiODY0ZjBhZjUtZmMxMy00ZWY0LWFiY2QtMzJhNmQ0NjY5ZjU5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIiLCJuYmYiOjE3NTI5NjE1MTAsImNzcmYiOiI0ZDI5MWI3OC02MmJhLTQ4MWMtOWFmNS1hZDAzZWI1MWIyMGMiLCJleHAiOjE3NTI5NjI0MTB9.d5ZTHgJpRk3eRuKY4hAFjraTn6f2rx9oFKUoraNaM7o
-Content-Type: application/json
-
-{
-  "username": "Elijah2",
-  "password": "password"
-}

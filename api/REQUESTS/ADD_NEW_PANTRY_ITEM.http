@@ -1,0 +1,12 @@
+POST http://localhost:5000/api/pantry
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1Mjk2OTQ0MywianRpIjoiOTlhZGNiNTktMzQxZS00MTljLTk5Y2YtMGM1M2QxNmNjN2VkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIiLCJuYmYiOjE3NTI5Njk0NDMsImNzcmYiOiJkMDhiMTNkMy05Y2E3LTRlZjctYTBkZi1jM2I4NjE3ODdlNzYiLCJleHAiOjE3NTI5NzAzNDN9.nWa5-vYCpwodtCkGZJ7eSdxbeseufRV8HbHxa567jRg
+Content-Type: application/json
+
+{
+  "pantry_entries": [
+    {
+      "name": "testing231242342",
+      "product_name": "test24243243"
+    }
+  ]
+}

@@ -27,6 +27,7 @@ class PantryEntry(db.Model):
     expiration_date: so.Mapped[date | None] = so.mapped_column(nullable=True)
     date_added: so.Mapped[date] = so.mapped_column(default=date.today,
                                                    nullable=False)
+    product_name: so.Mapped[str] = so.mapped_column(nullable=True)
     status: so.Mapped[PantryStatus] = so.mapped_column(
         sa.Enum(PantryStatus, native_enum=False),
         default=PantryStatus.IN_STOCK,
