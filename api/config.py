@@ -8,8 +8,8 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'my_test_key'
 
 # create as subclass to share common values
-class TestingConfig(Config):
-    TESTING = True
+class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = 'test-secret-key'
+    TESTING = True

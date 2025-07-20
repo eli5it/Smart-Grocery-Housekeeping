@@ -1,22 +1,17 @@
 import pytest
-from app import create_app
-
-class TestingConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = 'test-secret-key'  # override for testin
+from app import create_app, db
+from config import TestConfig
 
 @pytest.fixture()
 def app():
     app = create_app()
-   
+    app.config.from_object(TestConfig)
+    db.create_all()
 
-    # other setup can go here
+    with app.app_context():
+        db.create_all()  
 
-    yield app
-
-    # clean up / reset resources here
+        yield app       
 
 
 @pytest.fixture()
