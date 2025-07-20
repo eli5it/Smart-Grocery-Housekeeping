@@ -42,7 +42,6 @@ class Payload(BaseModel):
 @jwt_required()
 def add_pantry_entry():
     user_id = get_jwt_identity()
-
     try:
         # validate payload
         payload = Payload(**request.get_json())
