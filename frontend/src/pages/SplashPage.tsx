@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
+// This is a test comment from Brenna
+
 const SplashPage = () => {
   return (
     <>
