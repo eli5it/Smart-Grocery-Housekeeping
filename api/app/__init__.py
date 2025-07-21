@@ -14,8 +14,20 @@ migrate = Migrate()
 jwt = JWTManager()
 
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
+
+    app.config.from_object(Config)
+
+    if test_config:
+        app.config.update(test_config)
+
+    CORS(app)
+
+    # Initialize extensions with this app
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
 
     @app.shell_context_processor
     def make_shell_context():
@@ -27,13 +39,6 @@ def create_app():
         return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient,
                 'User': User, 'recipe': Recipe, 'PantryItem': PantryEntry,
                 'RecipeIngredient': RecipeIngredient}
-    CORS(app)
-    app.config.from_object(Config)
-
-    # Initialize extensions with this app
-    db.init_app(app)
-    migrate.init_app(app, db)
-    jwt.init_app(app)
 
     # Import blueprints and register them
     from app.routes.ingredient import ingredient_bp
