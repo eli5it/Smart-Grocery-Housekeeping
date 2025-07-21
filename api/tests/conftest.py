@@ -6,8 +6,7 @@ from werkzeug.security import generate_password_hash
 
 @pytest.fixture(scope='module')
 def test_app():
-    app = create_app()
-    app.config.update({
+    app = create_app({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,

@@ -17,10 +17,10 @@ jwt = JWTManager()
 def create_app(test_config=None):
     app = Flask(__name__)
 
-    app.config.from_object(Config)
-
     if test_config:
-        app.config.update(test_config)
+        app.config.from_mapping(test_config)
+    else:
+        app.config.from_object(Config)
 
     CORS(app)
 
