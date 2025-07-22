@@ -1,8 +1,8 @@
-"""Reset db
+"""initial
 
-Revision ID: 0b7678d45481
+Revision ID: 9b2cec66a4ec
 Revises: 
-Create Date: 2025-07-17 14:12:54.124851
+Create Date: 2025-07-21 09:01:33.682739
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0b7678d45481'
+revision = '9b2cec66a4ec'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,12 +29,12 @@ def upgrade():
     op.create_table('recipe',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=False),
-    sa.Column('description', sa.JSON(), nullable=True),
+    sa.Column('instructions', sa.JSON(), nullable=True),
     sa.Column('ingredients', sa.JSON(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('recipe', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_recipe_name'), ['name'], unique=True)
+        batch_op.create_index(batch_op.f('ix_recipe_name'), ['name'], unique=False)
 
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -49,6 +49,7 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('expiration_date', sa.Date(), nullable=True),
     sa.Column('date_added', sa.Date(), nullable=False),
+    sa.Column('product_name', sa.String(), nullable=True),
     sa.Column('status', sa.Enum('IN_STOCK', 'OUT_OF_STOCK', name='pantrystatus', native_enum=False), nullable=False),
     sa.ForeignKeyConstraint(['ingredient_id'], ['ingredient.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
