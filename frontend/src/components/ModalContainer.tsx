@@ -2,6 +2,7 @@ type ModalContainerProps = {
   close: () => void;
   children?: React.ReactNode;
 };
+
 const ModalContainer = ({ close, children }: ModalContainerProps) => {
   return (
     <div

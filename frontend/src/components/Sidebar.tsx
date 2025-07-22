@@ -9,6 +9,7 @@ type MobileSidebarProps = {
   toggleSidebarVisibility: () => void;
   showMobileSidebar: boolean;
 };
+
 const MobileSidebar = ({
   toggleSidebarVisibility,
   showMobileSidebar,
@@ -51,7 +52,6 @@ const MobileSidebar = ({
   );
 };
 
-// dashboard, inventory, recipes, reports
 const DesktopSidebar = () => {
   return (
     <aside className="hidden px-10 md:flex md:flex-col md:absolute">
