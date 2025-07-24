@@ -9,7 +9,7 @@ pantry_entry_bp = Blueprint('pantry_entry', __name__, url_prefix='/api/pantry_en
 
 
 
-@pantry_entry_bp.route('/', methods=['GET'])
+@pantry_entry_bp.route('', methods=['GET'])
 def search_pantry_entries():
     # get product_name, and ingredient name
     product_name = request.args.get('product_name')
