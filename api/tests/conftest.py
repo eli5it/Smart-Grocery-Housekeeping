@@ -41,17 +41,18 @@ def test_user(test_app):
 @pytest.fixture
 def sample_pantry_entries(test_app, test_user):
     with test_app.app_context():
-        
-        ingredient1 = Ingredient(name = "apple")
-        ingredient2 = Ingredient(name = "pasta")
-        db.session.add_all((ingredient1, ingredient2))
-        db.session.commit()
+        ingredient_exists = Ingredient.query.filter_by(name = 'apple').first()
+        if not ingredient_exists:
+            ingredient1 = Ingredient(name = "apple")
+            ingredient2 = Ingredient(name = "pasta")
+            db.session.add_all((ingredient1, ingredient2))
+            db.session.commit()
  
-        pantry_entry1 = PantryEntry(ingredient = ingredient1, product_name = "Barilla Pasta", user = test_user)
-        pantry_entry2 = PantryEntry(ingredient = ingredient2, product_name = "apple", user = test_user)
+            pantry_entry1 = PantryEntry(ingredient = ingredient1, product_name = "Barilla Pasta", user = test_user)
+            pantry_entry2 = PantryEntry(ingredient = ingredient2, product_name = "apple", user = test_user)
 
-        db.session.add_all([pantry_entry1, pantry_entry2])
-        db.session.commit()
+            db.session.add_all([pantry_entry1, pantry_entry2])
+            db.session.commit()
 
 
 @pytest.fixture
