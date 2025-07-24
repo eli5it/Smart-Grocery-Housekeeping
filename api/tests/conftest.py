@@ -35,3 +35,13 @@ def test_user(test_app):
             db.session.add(user)
             db.session.commit()
         return db.session.get(User, user.id)
+
+
+@pytest.fixture
+def auth_headers(client, test_user):
+    response = client.post('/api/login', json={
+        'username': test_user.username,
+        'password': 'test'
+    })
+    token = response.get_json()['access_token']
+    return {'Authorization': f'Bearer {token}'}
