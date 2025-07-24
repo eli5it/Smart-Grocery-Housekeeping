@@ -4,8 +4,11 @@ import sqlalchemy as sa
 from app import db
 from app.models.pantry_entry import PantryEntry
 from app.models.ingredient import Ingredient
+from app.schemas import PantryEntrySchema
+
 
 pantry_entry_bp = Blueprint('pantry_entry', __name__, url_prefix='/api/pantry_entry')
+pantry_entries_schema = PantryEntrySchema(many=True)
 
 
 
@@ -19,16 +22,23 @@ def search_pantry_entries():
 
     
     if product_name:
-        query = sa.select(PantryEntry).filter(PantryEntry.product_name.startswith(product_name))
-        products = db.session.scalars(query).all()
+        query = (sa.select(PantryEntry.product_name, Ingredient.name.label('ingredient_name'))
+        .join(PantryEntry.ingredient)
+        .filter(PantryEntry.product_name.startswith(product_name)))
+
+        results = db.session.execute(query).mappings().all()
+        # need results to be serializable
+        json_results = [dict(row) for row in results]
         return jsonify({
-            "products" : products
+            "products": json_results
         })
+
     else:
-        query = sa.select(Ingredient).filter(Ingredient.name.startswith(ingredient_name))
-        ingredients = db.session.scalars(query).all()
+        query = sa.select(Ingredient.name).filter(Ingredient.name.startswith(ingredient_name))
+        results = db.session.scalars(query).all()
+        print(results)
         return jsonify({
-            "ingredients" : ingredients
+            "ingredients" : results
         })
 
     

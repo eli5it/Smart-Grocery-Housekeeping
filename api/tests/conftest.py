@@ -1,6 +1,8 @@
 import pytest
 from app import create_app, db
 from app.models.user import User
+from app.models.pantry_entry import PantryEntry
+from app.models.ingredient import Ingredient
 from werkzeug.security import generate_password_hash
 
 
@@ -35,6 +37,21 @@ def test_user(test_app):
             db.session.add(user)
             db.session.commit()
         return db.session.get(User, user.id)
+
+@pytest.fixture
+def sample_pantry_entries(test_app, test_user):
+    with test_app.app_context():
+        
+        ingredient1 = Ingredient(name = "apple")
+        ingredient2 = Ingredient(name = "pasta")
+        db.session.add_all((ingredient1, ingredient2))
+        db.session.commit()
+ 
+        pantry_entry1 = PantryEntry(ingredient = ingredient1, product_name = "Barilla Pasta", user = test_user)
+        pantry_entry2 = PantryEntry(ingredient = ingredient2, product_name = "apple", user = test_user)
+
+        db.session.add_all([pantry_entry1, pantry_entry2])
+        db.session.commit()
 
 
 @pytest.fixture
