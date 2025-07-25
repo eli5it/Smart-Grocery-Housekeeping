@@ -18,3 +18,16 @@ def test_vision_no_mode(client, auth_headers, base_64_image):
     assert response.status_code == 400
     assert response.get_json()['msg'] == 'invalid mode'
 
+def test_vision_invalid_mode(client, auth_headers, base_64_image):
+    """When an invalid mode is provided, POST /api/vision/analyze gives a 400 error code"""
+    req_json = {"image": base_64_image, "mode": "foo"}
+    response = client.post('/api/vision/analyze', json=req_json, headers=auth_headers)
+    assert response.status_code == 400
+    assert response.get_json()['msg'] == 'invalid mode'
+
+def test_vision_invalid_image(client, auth_headers):
+    """When an invalid mode is provided, POST /api/vision/analyze gives a 400 error code"""
+    req_json = {"image": "not an image", "mode": "image"}
+    response = client.post('/api/vision/analyze', json=req_json, headers=auth_headers)
+    assert response.status_code == 400
+    assert response.get_json()['msg'] == 'invalid image'
