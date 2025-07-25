@@ -1,4 +1,3 @@
-import pytest
 from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus

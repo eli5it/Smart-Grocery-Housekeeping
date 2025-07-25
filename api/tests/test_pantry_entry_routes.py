@@ -1,6 +1,4 @@
-import pytest
 from app import db
-import json
 
 
 def test_invalid_search(client):

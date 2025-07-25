@@ -4,8 +4,10 @@ from app.models.user import User
 from app.models.pantry_entry import PantryEntry
 from app.models.ingredient import Ingredient
 from werkzeug.security import generate_password_hash
+import os
 
-
+# Set environment variables for google application credentials
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './api/vision_service_key.json'
 @pytest.fixture(scope='module')
 def test_app():
     app = create_app({
