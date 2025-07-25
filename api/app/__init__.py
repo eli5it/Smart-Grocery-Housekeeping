@@ -46,12 +46,14 @@ def create_app(test_config=None):
     from app.errors.handlers import errors as errors_bp
     from app.routes.login import login_bp
     from app.routes.pantry import pantry_bp
+    from app.routes.pantry_entry import pantry_entry_bp
 
     app.register_blueprint(ingredient_bp)
     app.register_blueprint(errors_bp)
     app.register_blueprint(barcode_bp)
     app.register_blueprint(login_bp, url_prefix='/api')
     app.register_blueprint(pantry_bp, url_prefix='/api')
+    app.register_blueprint(pantry_entry_bp)
 
     return app
 

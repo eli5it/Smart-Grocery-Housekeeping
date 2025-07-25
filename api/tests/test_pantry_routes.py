@@ -3,17 +3,6 @@ from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus
 
-
-@pytest.fixture
-def auth_headers(client, test_user):
-    response = client.post('/api/login', json={
-        'username': test_user.username,
-        'password': 'test'
-    })
-    token = response.get_json()['access_token']
-    return {'Authorization': f'Bearer {token}'}
-
-
 def test_add_pantry_entry(client, auth_headers):
     """Tests adding one valid pantry_entry that does not exist in the db"""
     data = { 
