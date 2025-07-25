@@ -36,7 +36,6 @@ def search_pantry_entries():
     else:
         query = sa.select(Ingredient.name).filter(Ingredient.name.startswith(ingredient_name))
         results = db.session.scalars(query).all()
-        print(results)
         return jsonify({
             "ingredients" : results
         })
