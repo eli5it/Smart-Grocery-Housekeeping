@@ -1,0 +1,7 @@
+POST http://localhost:5000/api/vision
+Content-Type: application/json
+
+{
+  "username": "Elijah",
+  "password": "password"
+}
