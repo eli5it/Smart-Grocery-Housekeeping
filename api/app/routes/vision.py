@@ -1,17 +1,9 @@
-from datetime import date
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-import sqlalchemy as sa
-from app import db
-from app.models.ingredient import Ingredient
-from app.models.pantry_entry import PantryEntry, PantryStatus
-from app.schemas import PantryEntrySchema
-import json
-from pydantic import BaseModel, ValidationError
-from typing import List, Optional
 import base64
 from google.cloud import vision
 from PIL import Image
+import io
 
 vision_bp = Blueprint('vision', __name__, url_prefix="/api/vision")
 
@@ -20,35 +12,34 @@ client = vision.ImageAnnotatorClient()
 def isValidImage(image_str):
     """isValidImage returns True if an image is a valid b64 encoded string, or false otherwise."""
     try:
-        valid_encoding = base64.b64encode(base64.b64decode(image_str)) == image_str
-        if valid_encoding:
-            img = Image.open(image_str)
-            img.verify(image_str)
-            return True
-        return False
+        image_bytes = base64.b64decode(image_str)
+        image = Image.open(io.BytesIO(image_bytes))
+        image.verify()
+        return True
     except Exception:
         return False
 
+    
+@jwt_required()
 @vision_bp.route('/analyze', methods=['POST'])
 def get_image_details():
     """Returns the image details of a provided base64 image of a product/ingredient"""
-
+    req_json = request.get_json()
     # only valid modes supported
     # pantry => picture of multiple products
     # label => picture of a product label
     possible_modes = ("label", "image", "pantry")
-    mode = request.args.get('mode')
+    mode = req_json.get('mode')
     #base 64 encoded image
-    image = request.args.get('image')
-
+    image = req_json.get('image')
     if image is None or not isValidImage(image):
         return jsonify({
-            "msg": "Invalid image"
+            "msg": "invalid image"
         }), 400
 
     if not mode in possible_modes:
         return jsonify({
-            "msg" : "Invalid mode"
+            "msg" : "invalid mode"
         }), 400
     image_bytes = base64.b64decode(image)
     
@@ -69,4 +60,3 @@ def get_image_details():
 
 
 
-    return jsonify({"hello" : "world"}), 200
