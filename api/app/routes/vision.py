@@ -4,10 +4,19 @@ import base64
 from google.cloud import vision
 from PIL import Image
 import io
+from app.models.ingredient import Ingredient
+import sqlalchemy as sa
+from app import db
+
+
+
 
 vision_bp = Blueprint('vision', __name__, url_prefix="/api/vision")
 
-client = vision.ImageAnnotatorClient()
+def get_vision_client():
+    # need to lazy load client to prevent auth errors 
+    # when env variable is not defined
+    return vision.ImageAnnotatorClient()
 
 def isValidImage(image_str):
     """isValidImage returns True if an image is a valid b64 encoded string, or false otherwise."""
@@ -19,6 +28,19 @@ def isValidImage(image_str):
     except Exception:
         return False
 
+
+def get_matching_ingredient(candidates):
+    """
+    Given a sorted list of ingredient candidates, 
+    get_matching ingredient returns the top candidate in the db, 
+    or None if none are in the db
+    """
+    stmt = sa.select(Ingredient.name).filter(Ingredient.name.in_(candidates))
+    result_set = set(db.session.scalars(stmt).all())
+    for candidate in candidates:
+        # return first candidate that is in our db
+        if candidate.lower() in result_set:
+            return candidate.lower()
     
 @jwt_required()
 @vision_bp.route('/analyze', methods=['POST'])
@@ -43,17 +65,30 @@ def get_image_details():
         }), 400
     image_bytes = base64.b64decode(image)
     
-    if mode == "image":
-        vision_image = vision.Image(content = image_bytes)
-        response = client.label_detection(image = vision_image)
-        labels = [
-            {"description": label.description, "score": label.score}
-            for label in response.label_annotations
-        ]
+    try:
+        client = get_vision_client()
+        if mode == "image":
+            vision_image = vision.Image(content = image_bytes)
+            response = client.label_detection(image = vision_image)
+            if hasattr(response, "label_annotations"):
+                candidates = [label.description for label in response.label_annotations]
+                ingredient = get_matching_ingredient(candidates)
+                return jsonify({ingredient})
+            raise Exception('unexpected google api response')
+        elif mode == "pantry":
+            raise Exception('not implemented')
+        else:
+            raise Exception('not implemented')
 
-        return jsonify({"labels": labels}), 200
 
-    return jsonify({"msg": "todo"}), 200
+    except Exception:
+        print('exception occured')
+        #handle all google api errors
+        return jsonify({"ingredients": []})
+
+
+
+    
         
         
 

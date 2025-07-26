@@ -3,7 +3,9 @@ from app import create_app, db
 from app.models.user import User
 from app.models.pantry_entry import PantryEntry
 from app.models.ingredient import Ingredient
+from app.models.recipe import Recipe
 from werkzeug.security import generate_password_hash
+from bulk_import import load_recipe_data
 import os
 
 # Set environment variables for google application credentials
@@ -65,3 +67,11 @@ def auth_headers(client, test_user):
     })
     token = response.get_json()['access_token']
     return {'Authorization': f'Bearer {token}'}
+
+@pytest.fixture
+def populate_db():
+    recipe_count = db.session.query(Recipe).count()
+    # do not want to execute expensive sql query multiple times
+    if recipe_count < 10:
+        print('populating recipes')
+        load_recipe_data('./api/data/matching_recipes.json')
