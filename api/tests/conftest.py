@@ -3,9 +3,16 @@ from app import create_app, db
 from app.models.user import User
 from app.models.pantry_entry import PantryEntry
 from app.models.ingredient import Ingredient
+from app.models.recipe import Recipe
 from werkzeug.security import generate_password_hash
+from bulk_import import load_recipe_data
+import os
+from pathlib import Path
 
+recipe_path = Path(__file__).parent.parent / "data" / "matching_recipes.json"
 
+# Set environment variables for google application credentials
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './api/vision_service_key.json'
 @pytest.fixture(scope='module')
 def test_app():
     app = create_app({
@@ -63,3 +70,11 @@ def auth_headers(client, test_user):
     })
     token = response.get_json()['access_token']
     return {'Authorization': f'Bearer {token}'}
+
+@pytest.fixture
+def populate_db():
+    recipe_count = db.session.query(Recipe).count()
+    # do not want to execute expensive sql query multiple times
+    if recipe_count < 10:
+        print('populating recipes')
+        load_recipe_data(recipe_path)
