@@ -68,19 +68,22 @@ def get_image_details():
     
     try:
         client = get_vision_client()
+        vision_image = vision.Image(content = image_bytes)
+
         if mode == "image":
-            vision_image = vision.Image(content = image_bytes)
             response = client.label_detection(image = vision_image)
-            print(response)
             if hasattr(response, "label_annotations"):
                 candidates = [label.description.lower() for label in response.label_annotations]
                 ingredient = get_matching_ingredient(candidates)
                 return jsonify({"ingredient": ingredient})
             raise Exception('unexpected google api response')
         elif mode == "pantry":
-            raise Exception('not implemented')
+            # likely use object_localization()
+            return jsonify({"msg": "Not Implemented"}), 400
         else:
-            raise Exception('not implemented')
+            # likely use document_text_detection
+            return jsonify({"msg": "Not Implemented"}), 400
+
 
 
     except Exception:
