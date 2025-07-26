@@ -1,5 +1,29 @@
 import base64
 import pytest
+from unittest.mock import patch
+from unittest.mock import MagicMock
+
+
+
+def mock_vision_image_client():
+    # GENAI Citation
+    # https://chatgpt.com/share/6885377c-e934-8012-96b5-2a6d7993647f
+    print('mocking')
+    mock_label_1 = MagicMock()
+    mock_label_1.description = "fruits"
+    mock_label_1.score = 0.98
+    mock_label_2 = MagicMock()
+    mock_label_2.description = "Apple"
+    mock_label_2.score = 0.98
+
+    mock_response = MagicMock()
+    mock_response.label_annotations = [mock_label_1, mock_label_2]
+
+    mock_client = MagicMock()
+    mock_client.label_detection.return_value = mock_response
+
+    return mock_client
+
 
 @pytest.fixture
 def base_64_image():
@@ -34,5 +58,8 @@ def test_vision_invalid_image(client, auth_headers):
 
 def test_vision_valid_image(client, auth_headers, base_64_image, populate_db):
     req_json = {"image": base_64_image, "mode": "image"}
-    # response = client.post('/api/vision/analyze', json=req_json, headers=auth_headers)
-    assert True == True
+    # mock the vision client in the api route
+    with patch("app.routes.vision.get_vision_client", new=mock_vision_image_client):
+        response = client.post('/api/vision/analyze', json=req_json, headers=auth_headers)
+        assert response.get_json()['ingredient'] == 'apple'
+

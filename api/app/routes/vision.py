@@ -42,6 +42,7 @@ def get_matching_ingredient(candidates):
         if candidate.lower() in result_set:
             return candidate.lower()
     
+
 @jwt_required()
 @vision_bp.route('/analyze', methods=['POST'])
 def get_image_details():
@@ -70,10 +71,11 @@ def get_image_details():
         if mode == "image":
             vision_image = vision.Image(content = image_bytes)
             response = client.label_detection(image = vision_image)
+            print(response)
             if hasattr(response, "label_annotations"):
-                candidates = [label.description for label in response.label_annotations]
+                candidates = [label.description.lower() for label in response.label_annotations]
                 ingredient = get_matching_ingredient(candidates)
-                return jsonify({ingredient})
+                return jsonify({"ingredient": ingredient})
             raise Exception('unexpected google api response')
         elif mode == "pantry":
             raise Exception('not implemented')
