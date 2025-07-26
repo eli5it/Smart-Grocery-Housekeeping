@@ -7,6 +7,9 @@ from app.models.recipe import Recipe
 from werkzeug.security import generate_password_hash
 from bulk_import import load_recipe_data
 import os
+from pathlib import Path
+
+recipe_path = Path(__file__).parent.parent / "data" / "matching_recipes.json"
 
 # Set environment variables for google application credentials
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './api/vision_service_key.json'
@@ -74,4 +77,4 @@ def populate_db():
     # do not want to execute expensive sql query multiple times
     if recipe_count < 10:
         print('populating recipes')
-        load_recipe_data('./api/data/matching_recipes.json')
+        load_recipe_data(recipe_path)
