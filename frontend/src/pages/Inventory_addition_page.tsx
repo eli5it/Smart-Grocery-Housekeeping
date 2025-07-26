@@ -158,7 +158,10 @@ const ManualView = ({ setPantryItems }: ManualViewProps) => {
   );
 };
 
-const InventoryPage = () => {
+type InventoryPageProps = {
+  switchView: () => void;
+};
+const InventoryPage = ({ switchView }: InventoryPageProps) => {
   const [mode, setMode] = useState<"camera" | "barcode" | "manual">("barcode");
   // will store all scanned / manually added items
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
@@ -196,9 +199,18 @@ const InventoryPage = () => {
 
   return (
     <>
-      <h1 className="text-center font-bold text-3xl md:text-left">
-        Add a new item
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-center font-bold text-3xl md:text-left">
+          Add a new item
+        </h1>
+        <button
+          className="bg-light-green text-white flex justify-center items-center h-10 rounded-2xl px-3 py-2"
+          onClick={switchView}
+        >
+          View Pantry
+        </button>
+      </div>
+
       <div className="flex px-4 gap-2 font-semibold my-3 justify-center">
         <button
           className={cn("", {

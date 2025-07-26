@@ -6,7 +6,6 @@ from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus
 from app.schemas import PantryEntrySchema
-import json
 from pydantic import BaseModel, ValidationError
 from typing import List, Optional
 

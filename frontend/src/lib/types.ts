@@ -9,3 +9,9 @@ export type PantryItem = {
   ingredient_name: string;
   image_url?: string;
 };
+
+export type PantryListItem = {
+  product_name: string;
+  ingredient_name: string;
+  expiration_date: string;
+};
