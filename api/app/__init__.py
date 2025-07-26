@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
+
 # assistance from ChatGPT https://chatgpt.com/share/6865e6ff-26c0-8012-a772-70b7b9de5273
 
 db = SQLAlchemy()
@@ -36,9 +37,11 @@ def create_app(test_config=None):
         from app.models import (
             Ingredient, User, Recipe, PantryEntry, RecipeIngredient
         )
+        from app.utils.recipe_scoring import score_recipes
         return {'sa': sa, 'so': so, 'db': db, 'Ingredient': Ingredient,
                 'User': User, 'recipe': Recipe, 'PantryItem': PantryEntry,
-                'RecipeIngredient': RecipeIngredient}
+                'RecipeIngredient': RecipeIngredient,
+                'score_recipes': score_recipes}
 
     # Import blueprints and register them
     from app.routes.ingredient import ingredient_bp
@@ -47,6 +50,7 @@ def create_app(test_config=None):
     from app.routes.login import login_bp
     from app.routes.pantry import pantry_bp
     from app.routes.pantry_entry import pantry_entry_bp
+    from app.routes.recipe import recipe_bp
 
     app.register_blueprint(ingredient_bp)
     app.register_blueprint(errors_bp)
@@ -54,6 +58,7 @@ def create_app(test_config=None):
     app.register_blueprint(login_bp, url_prefix='/api')
     app.register_blueprint(pantry_bp, url_prefix='/api')
     app.register_blueprint(pantry_entry_bp)
+    app.register_blueprint(recipe_bp, url_prefix='/api')
 
     return app
 

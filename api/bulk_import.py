@@ -24,7 +24,7 @@ print(f"🧂 Found {len(all_ingredients)} unique ingredients.")
 db.drop_all()
 db.create_all()
 
-ingredient_objects = [Ingredient(name=name, image="") for name in sorted(all_ingredients)]
+ingredient_objects = [Ingredient(name=name) for name in sorted(all_ingredients)]
 db.session.add_all(ingredient_objects)
 db.session.commit()
 
