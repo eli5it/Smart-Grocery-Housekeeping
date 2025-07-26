@@ -47,6 +47,7 @@ def create_app(test_config=None):
     from app.routes.login import login_bp
     from app.routes.pantry import pantry_bp
     from app.routes.pantry_entry import pantry_entry_bp
+    from app.routes.recipe import recipe_bp
 
     app.register_blueprint(ingredient_bp)
     app.register_blueprint(errors_bp)
@@ -54,6 +55,7 @@ def create_app(test_config=None):
     app.register_blueprint(login_bp, url_prefix='/api')
     app.register_blueprint(pantry_bp, url_prefix='/api')
     app.register_blueprint(pantry_entry_bp)
+    app.register_blueprint(recipe_bp, url_prefix='/api')
 
     return app
 
