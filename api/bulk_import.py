@@ -1,10 +1,12 @@
 import json
 from app import create_app
 from app import db
-from app.models import Ingredient, Recipe, RecipeIngredient
+from app.models import Ingredient, Recipe, RecipeIngredient, User, PantryEntry
 import ijson
 import sqlalchemy as sa
-
+from werkzeug.security import check_password_hash, generate_password_hash
+import random
+from datetime import date, timedelta
 
 def load_recipe_data(recipe_file_path = './data/matching_recipes.json'):
     with open(recipe_file_path, 'rb') as file:
@@ -36,8 +38,46 @@ def load_recipe_data(recipe_file_path = './data/matching_recipes.json'):
             db.session.commit()
         
             
+def create_test_user(username = "test_user", password = 'password'):
+    user = db.session.execute(
+        sa.select(User).where(User.username == username)).scalar_one_or_none()
 
+    if user is None:
+        password_hash = generate_password_hash(password)
+        user = User(username = username, password_hash = password_hash)
+    
+        db.session.add(user)
+        db.session.commit()
 
+    ingredient_stmt = sa.select(Ingredient)
+    all_ingredients = db.session.execute(ingredient_stmt).scalars().all()
+    ingredient_count = len(all_ingredients)
+    # fake prefixes for product names
+    prefixes = ["John's Famous", "Trader Joe's", "Harvest Grove", "MeadowFresh", "Evergreen Pantry", "Friendly Table", "CountryLane"]
+    prefix_idx = 0
+    # test_user will have every 4th ingredient in their cupboard
+    for i in range(0, ingredient_count, 4):
+        ingredient = all_ingredients[i]
+        prefix = prefixes[prefix_idx % len(prefixes)]
+        product_name = f"{prefix} {ingredient.name.capitalize()}"
+        # quantity ranges from 1 to 5
+        count = (prefix_idx % (len(prefixes) - 2)) + 1
+        today = date.today()
+        # add different quantities of ingredients
+        for j in range(count):
+            expiration_date = today + timedelta(days=j)
+            new_entry = PantryEntry(
+                                    ingredient_id=ingredient.id,
+                                    user_id=user.id,
+                                    expiration_date=expiration_date,
+                                    product_name= product_name,
+                                    status="in_stock"
+            )
+            db.session.add(new_entry)
+
+        prefix_idx += 1
+    
+    db.session.commit()
         
 if __name__ == "__main__":
     from app import create_app
@@ -46,3 +86,4 @@ if __name__ == "__main__":
         db.drop_all()
         db.create_all()
         load_recipe_data()
+        create_test_user()
