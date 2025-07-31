@@ -95,7 +95,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
     });
   };
 
-  const mutation = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: deletePantryEntry,
     onSuccess: () => {
       // Invalidate and refetch
@@ -129,7 +129,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
           <tbody>
             {Object.keys(pantryEntries).map((product_name) => (
               <PantryTableEntry
-                deleteEntry={mutation.mutate}
+                deleteEntry={deleteMutation.mutate}
                 entries={pantryEntries[product_name]}
               />
             ))}
