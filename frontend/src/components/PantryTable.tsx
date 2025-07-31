@@ -1,22 +1,27 @@
-import type { PantryListItem } from "../lib/types";
+import type { PantryEntry, PantryEntryByProductName } from "../lib/types";
 
 type PantryTableEntryProps = {
-  entry: PantryListItem;
+  entries: PantryEntry[];
 };
-const PantryTableEntry = ({ entry }: PantryTableEntryProps) => {
+const PantryTableEntry = ({ entries }: PantryTableEntryProps) => {
+  // this is emergency error handling, entries should always have a non-zero length
+  if (entries.length === 0) {
+    return <></>;
+  }
+
   return (
     <tr className="border-t border-gray-500">
-      <td className="px-5 py-2">{entry.product_name}</td>
-      <td className="px-5 py-2">{entry.ingredient_name}</td>
-      <td className="px-5 py-2">{entry.expiration_date}</td>
+      <td className="px-5 py-2">{entries[0].product_name}</td>
+      <td className="px-5 py-2">{entries[0].ingredient.name}</td>
+      <td className="px-5 py-2">{entries[0].expiration_date}</td>
     </tr>
   );
 };
 
 type PantryTableProps = {
-  entries: PantryListItem[];
+  pantryEntries: PantryEntryByProductName;
 };
-const PantryTable = ({ entries }: PantryTableProps) => {
+const PantryTable = ({ pantryEntries }: PantryTableProps) => {
   return (
     <>
       <div className="px-2 py-4 max-w-[800px]">
@@ -36,8 +41,8 @@ const PantryTable = ({ entries }: PantryTableProps) => {
             </tr>
           </thead>
           <tbody>
-            {entries.map((entry) => (
-              <PantryTableEntry entry={entry} />
+            {Object.keys(pantryEntries).map((product_name) => (
+              <PantryTableEntry entries={pantryEntries[product_name]} />
             ))}
           </tbody>
         </table>

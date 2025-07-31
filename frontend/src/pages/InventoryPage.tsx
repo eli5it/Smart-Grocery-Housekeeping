@@ -7,13 +7,8 @@ import axios from "axios";
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"add" | "view">("view");
-  const expiringCount = 3;
-  const expiredCount = 4;
-  const totalItemCount = 5;
-
   const getPantry = () => {
     const token = localStorage.getItem("access_token");
-    console.log(token);
     return axios.get<PantryEntry[]>("/api/pantry", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,6 +46,10 @@ const InventoryPage = () => {
       }
       return acc;
     }, entries);
+
+    const expiringCount = 3;
+    const expiredCount = 4;
+    const totalItemCount = 5;
 
     return (
       <>
@@ -98,7 +97,7 @@ const InventoryPage = () => {
             </div>
           </li>
         </ul>
-        <PantryTable entries={entries} />
+        <PantryTable pantryEntries={entries} />
       </>
     );
   }
