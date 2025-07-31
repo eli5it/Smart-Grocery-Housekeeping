@@ -4,6 +4,7 @@ import { useState } from "react";
 import InventoryAdditionView from "./Inventory_addition_page";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { parseISO, differenceInDays } from "date-fns";
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"add" | "view">("view");
@@ -36,6 +37,21 @@ const InventoryPage = () => {
 
     // axios returns an object with a data property
     const responseData = data.data;
+    let expiringCount = 3;
+    let expiredCount = 4;
+    const totalItemCount = responseData.length;
+
+    for (const entry of responseData) {
+      const parsedDate = parseISO(entry.expiration_date);
+      const today = new Date();
+      const diff = differenceInDays(parsedDate, today);
+      if (diff < 0) {
+        expiredCount += 1;
+      } else if (diff < 3) {
+        expiringCount += 1;
+      }
+    }
+
     let entries: PantryEntryByProductName = {};
 
     entries = responseData.reduce((acc, curr) => {
@@ -46,10 +62,6 @@ const InventoryPage = () => {
       }
       return acc;
     }, entries);
-
-    const expiringCount = 3;
-    const expiredCount = 4;
-    const totalItemCount = 5;
 
     return (
       <>

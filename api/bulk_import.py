@@ -54,6 +54,9 @@ def create_test_user(username = "test_user", password = 'password'):
     ingredient_count = len(all_ingredients)
     # fake prefixes for product names
     prefixes = ["John's Famous", "Trader Joe's", "Harvest Grove", "MeadowFresh", "Evergreen Pantry", "Friendly Table", "CountryLane"]
+
+    time_deltas = [-2, -1, 0, 1, 2, 7, 8, 9, 10, 14, 21]
+    delta_idx = 0
     prefix_idx = 0
     # test_user will have every 4th ingredient in their cupboard
     for i in range(0, ingredient_count, 4):
@@ -65,7 +68,7 @@ def create_test_user(username = "test_user", password = 'password'):
         today = date.today()
         # add different quantities of ingredients
         for j in range(count):
-            expiration_date = today + timedelta(days=j)
+            expiration_date = today + timedelta(time_deltas[delta_idx % len(time_deltas)])
             new_entry = PantryEntry(
                                     ingredient_id=ingredient.id,
                                     user_id=user.id,
@@ -74,6 +77,7 @@ def create_test_user(username = "test_user", password = 'password'):
                                     status="in_stock"
             )
             db.session.add(new_entry)
+            delta_idx += 1
 
         prefix_idx += 1
     
