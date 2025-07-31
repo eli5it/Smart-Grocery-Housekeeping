@@ -15,3 +15,21 @@ export type PantryListItem = {
   ingredient_name: string;
   expiration_date: string;
 };
+
+export type Ingredient = {
+  id: number;
+  name: string;
+};
+
+export type PantryEntry = {
+  id: number;
+  date_added: string;
+  expiration_date: string;
+  ingredient_id: number;
+  product_name: string;
+  status: "in_stock" | "out_of_stock";
+  user_id: number;
+  ingredient: Ingredient;
+};
+
+export type PantryEntryByProductName = Record<string, PantryEntry[]>;

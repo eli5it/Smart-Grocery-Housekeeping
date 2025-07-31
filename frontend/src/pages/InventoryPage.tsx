@@ -1,7 +1,9 @@
-import type { PantryListItem } from "../lib/types";
+import type { PantryEntry, PantryEntryByProductName } from "../lib/types";
 import PantryTable from "../components/PantryTable";
 import { useState } from "react";
 import InventoryAdditionView from "./Inventory_addition_page";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"add" | "view">("view");
@@ -9,46 +11,47 @@ const InventoryPage = () => {
   const expiredCount = 4;
   const totalItemCount = 5;
 
-  const pantryItems: PantryListItem[] = [
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-    {
-      product_name: "Milk",
-      ingredient_name: "Milk",
-      expiration_date: "01/01/2025",
-    },
-  ];
+  const getPantry = () => {
+    const token = localStorage.getItem("access_token");
+    console.log(token);
+    return axios.get<PantryEntry[]>("/api/pantry", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  const pantryQuery = useQuery({ queryKey: ["pantry"], queryFn: getPantry });
+
+  const { data, isPending, error } = pantryQuery;
 
   // this is a really hacky solution, should replace w/subroutes later
   if (mode == "view") {
+    if (isPending) {
+      return <div className="font-bold text-3xl">Fetching your pantry</div>;
+    }
+
+    if (error) {
+      return (
+        <div className="font-bold text-3xl">
+          An Unexpected error has occured. Please try again later
+        </div>
+      );
+    }
+
+    // axios returns an object with a data property
+    const responseData = data.data;
+    let entries: PantryEntryByProductName = {};
+
+    entries = responseData.reduce((acc, curr) => {
+      if (acc[curr.product_name]) {
+        acc[curr.product_name].push(curr);
+      } else {
+        acc[curr.product_name] = [curr];
+      }
+      return acc;
+    }, entries);
+
     return (
       <>
         <div className="flex items-center justify-between">
@@ -95,7 +98,7 @@ const InventoryPage = () => {
             </div>
           </li>
         </ul>
-        <PantryTable entries={pantryItems} />
+        <PantryTable entries={entries} />
       </>
     );
   }
