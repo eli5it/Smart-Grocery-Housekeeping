@@ -1,6 +1,7 @@
 import type { PantryStats } from "../lib/types";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import PieChart from "./PieChart";
 
 const ReportsPage = () => {
   const getStats = () => {
@@ -16,6 +17,43 @@ const ReportsPage = () => {
   const { data: data } = statsQuery;
 
   const stats = data?.data;
+
+  let currentPieChartData;
+  let outOfStockPieChartData;
+  if (stats) {
+    const { expiring, expired, total, used, discarded } = stats;
+
+    currentPieChartData = [
+      {
+        name: "Available",
+        value: total - (expiring + expired),
+        color: "#2E7D32",
+      },
+      {
+        name: "Expired",
+        value: expired,
+        color: "#C62828",
+      },
+      {
+        name: "Expiring",
+        value: expiring,
+        color: "#F9A825",
+      },
+    ];
+
+    outOfStockPieChartData = [
+      {
+        name: "Used",
+        value: used,
+        color: "#2E7D32",
+      },
+      {
+        name: "Discarded",
+        value: expiring,
+        color: "#C62828",
+      },
+    ];
+  }
 
   return (
     <>
@@ -41,6 +79,10 @@ const ReportsPage = () => {
         </div>
       </div>
       <h2 className="font-bold text-3xl my-6">Charts</h2>
+      <section className="h-[240px] md:flex">
+        {currentPieChartData && <PieChart data={currentPieChartData} />}
+        {outOfStockPieChartData && <PieChart data={outOfStockPieChartData} />}
+      </section>
     </>
   );
 };
