@@ -1,5 +1,23 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import type { PantryStats } from "../lib/types";
+import axios from "axios";
 const DashboardPage = () => {
+  const getStats = () => {
+    const token = localStorage.getItem("access_token");
+    return axios.get<PantryStats>("/api/pantry/stats", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  const statsQuery = useQuery({ queryKey: ["stats"], queryFn: getStats });
+
+  const { data } = statsQuery;
+
+  const stats = data?.data;
+
   return (
     <>
       <h1 className="font-bold text-center md:text-left text-3xl">Dashboard</h1>
@@ -13,7 +31,7 @@ const DashboardPage = () => {
                 alt="hourglass"
               />
               <p className="font-bold text-2xl lg:text-4xl xl:text-6xl lg:self-center">
-                4 Items Expiring Soon
+                {stats ? stats.expiring : ""} Items Expiring Soon
               </p>
             </div>
             <div className="bg-light-blue flex flex-1/2 rounded-lg min-h-[112px] px-6 py-6 gap-2">
@@ -23,7 +41,7 @@ const DashboardPage = () => {
                 alt="warning"
               />
               <p className="font-bold text-2xl lg:text-4xl xl:text-6xl lg:self-center">
-                5 Expired Items
+                {stats ? stats.expired : ""} Expired Items
               </p>
             </div>
           </div>

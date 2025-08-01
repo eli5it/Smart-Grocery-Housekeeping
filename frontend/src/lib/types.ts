@@ -41,3 +41,9 @@ export type Recipe = {
   name: string;
   id: number;
 };
+
+export type PantryStats = {
+  total: number;
+  expiring: number;
+  expired: number;
+};
