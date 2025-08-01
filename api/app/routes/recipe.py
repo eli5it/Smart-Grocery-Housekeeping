@@ -15,7 +15,7 @@ recipes_schema = RecipeSchema(many=True)
 @recipe_bp.route('/recipes/<int:recipe_id>', methods=['GET'])
 @jwt_required()
 def get_recipe(recipe_id):
-    recipe = Recipe.query.get(recipe_id)
+    recipe = db.session.get(Recipe, recipe_id)
     if not recipe:
         return jsonify({'message': 'Recipe not found'}), 404
     return jsonify(recipe_schema.dump(recipe)), 200
