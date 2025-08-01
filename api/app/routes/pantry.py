@@ -2,12 +2,14 @@ from datetime import date
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import sqlalchemy as sa
+from sqlalchemy import func, case
 from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus
 from app.schemas import PantryEntrySchema
 from pydantic import BaseModel, ValidationError
 from typing import List, Optional
+from datetime import timedelta
 
 pantry_bp = Blueprint('pantry', __name__)
 pantry_entry_schema = PantryEntrySchema()
@@ -150,3 +152,45 @@ def update_pantry_entry(entry_id):
 
     db.session.commit()
     return jsonify(pantry_entry_schema.dump(pantry_entry)), 200
+
+# GENAI Citation
+# https://chatgpt.com/share/688cc3a5-06fc-8012-b632-4dff9c019b56
+@pantry_bp.route('/pantry/stats', methods=['GET'])
+@jwt_required()
+def pantry_stats():
+    """Returns counts of expiring, expired, and total items"""
+    user_id = get_jwt_identity()
+    today = date.today()
+    threshold = today + timedelta(days=3)
+    try:
+        stats = (
+            db.session.query(
+                func.count(PantryEntry.id).label("total"),
+                func.sum(
+                    case((PantryEntry.expiration_date < today, 1), else_=0)
+                ).label("expired"),
+                func.sum(
+                    case(
+                        (
+                            (PantryEntry.expiration_date >= today) &
+                            (PantryEntry.expiration_date <= threshold),
+                            1
+                        ),
+                        else_=0
+                    )
+                ).label("expiring"),
+                
+            )
+            .filter(PantryEntry.user_id == user_id)
+            .one()
+        )
+    except Exception:
+        return jsonify({
+            "msg": "Something went wrong. Please try again later."
+        }), 500
+    
+    return jsonify({
+        "total": stats.total,
+        "expired": stats.expired,
+        "expiring": stats.expiring,
+    })
