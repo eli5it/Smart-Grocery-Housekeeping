@@ -46,4 +46,7 @@ export type PantryStats = {
   total: number;
   expiring: number;
   expired: number;
+  used: number;
+  discarded: number;
+  available: number;
 };

@@ -5,6 +5,7 @@ import InventoryAdditionView from "./Inventory_addition_page";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { parseISO, differenceInDays } from "date-fns";
+import type { PantryStats } from "../lib/types";
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"add" | "view">("view");
@@ -18,6 +19,17 @@ const InventoryPage = () => {
   };
 
   const pantryQuery = useQuery({ queryKey: ["pantry"], queryFn: getPantry });
+  const getStats = () => {
+    const token = localStorage.getItem("access_token");
+    return axios.get<PantryStats>("/api/pantry/stats", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+  const statsQuery = useQuery({ queryKey: ["stats"], queryFn: getStats });
+
+  const { data: statsData } = statsQuery;
 
   const { data, isPending, error } = pantryQuery;
 
@@ -37,20 +49,6 @@ const InventoryPage = () => {
 
     // axios returns an object with a data property
     const responseData = data.data;
-    let expiringCount = 3;
-    let expiredCount = 4;
-    const totalItemCount = responseData.length;
-
-    for (const entry of responseData) {
-      const parsedDate = parseISO(entry.expiration_date);
-      const today = new Date();
-      const diff = differenceInDays(parsedDate, today);
-      if (diff < 0) {
-        expiredCount += 1;
-      } else if (diff < 3) {
-        expiringCount += 1;
-      }
-    }
 
     let entries: PantryEntryByProductName = {};
 
@@ -83,7 +81,9 @@ const InventoryPage = () => {
             />
             <div className="">
               <p className="md:text-2xl">Total Items</p>
-              <p className="font-bold md:text-2xl">{totalItemCount}</p>
+              <p className="font-bold md:text-2xl">
+                {statsData ? statsData?.data.total : ""}
+              </p>
             </div>
           </li>
           <li className="flex flex-1 bg-yellow rounded-lg px-2 py-3 gap-2">
@@ -94,7 +94,10 @@ const InventoryPage = () => {
             />
             <div className="">
               <p className="md:text-2xl">Expiring Soon</p>
-              <p className="font-bold md:text-2xl">{expiringCount}</p>
+              <p className="font-bold md:text-2xl">
+                {" "}
+                {statsData ? statsData?.data.expiring : ""}
+              </p>
             </div>
           </li>
           <li className="flex flex-1 bg-light-red rounded-lg px-2 py-3 gap-2">
@@ -105,7 +108,9 @@ const InventoryPage = () => {
             />
             <div className="">
               <p className="md:text-2xl">Expired</p>
-              <p className="font-bold md:text-2xl">{expiredCount}</p>
+              <p className="font-bold md:text-2xl">
+                {statsData ? statsData?.data.expired : ""}
+              </p>
             </div>
           </li>
         </ul>

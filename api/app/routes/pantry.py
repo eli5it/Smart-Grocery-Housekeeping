@@ -167,30 +167,67 @@ def pantry_stats():
             db.session.query(
                 func.count(PantryEntry.id).label("total"),
                 func.sum(
-                    case((PantryEntry.expiration_date < today, 1), else_=0)
+                    case((
+                        (PantryEntry.expiration_date < today) &
+                        (PantryEntry.status == PantryStatus.IN_STOCK), 1      
+                    ), else_=0)
                 ).label("expired"),
                 func.sum(
                     case(
                         (
                             (PantryEntry.expiration_date >= today) &
-                            (PantryEntry.expiration_date <= threshold),
-                            1
+                            (PantryEntry.expiration_date <= threshold) &
+                            (PantryEntry.status == PantryStatus.IN_STOCK)
+                            ,1
                         ),
                         else_=0
                     )
                 ).label("expiring"),
-                
+                func.sum(
+                    case(
+                        (
+                            (PantryEntry.status == PantryStatus.USED)
+                            ,1
+                        ),
+                        else_=0
+                    )
+                ).label("used"),
+                func.sum(
+                    case(
+                        (
+                            (PantryEntry.status == PantryStatus.DISCARDED)
+                            ,1
+                        ),
+                        else_=0
+                    )
+                ).label("discarded"),
+                func.sum(
+                    case(
+                        (
+                            (PantryEntry.expiration_date >= threshold) &
+                            (PantryEntry.status == PantryStatus.IN_STOCK)
+                            ,1
+                        ),
+                        else_=0
+                    )
+                ).label("available"),
             )
             .filter(PantryEntry.user_id == user_id)
             .one()
         )
-    except Exception:
+    except Exception as e:
+        print(e)
         return jsonify({
             "msg": "Something went wrong. Please try again later."
         }), 500
     
+    
+
     return jsonify({
         "total": stats.total,
         "expired": stats.expired,
         "expiring": stats.expiring,
+        "used" : stats.used,
+        "discard": stats.discarded,
+        "available": stats.available
     })
