@@ -21,6 +21,7 @@ import { Route as AppLayoutRecipesRouteImport } from './routes/app/_layout/recip
 import { Route as AppLayoutInventoryRouteImport } from './routes/app/_layout/inventory'
 import { Route as AppLayoutGroceriesRouteImport } from './routes/app/_layout/groceries'
 import { Route as AppLayoutDashboardRouteImport } from './routes/app/_layout/dashboard'
+import { Route as AppLayoutRecipeRecipeIdRouteImport } from './routes/app/_layout/recipe.$recipeId'
 
 const AppRouteImport = createFileRoute('/app')()
 
@@ -78,6 +79,11 @@ const AppLayoutDashboardRoute = AppLayoutDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
+const AppLayoutRecipeRecipeIdRoute = AppLayoutRecipeRecipeIdRouteImport.update({
+  id: '/recipe/$recipeId',
+  path: '/recipe/$recipeId',
+  getParentRoute: () => AppLayoutRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
+  '/app/recipe/$recipeId': typeof AppLayoutRecipeRecipeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
+  '/app/recipe/$recipeId': typeof AppLayoutRecipeRecipeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/app/_layout/inventory': typeof AppLayoutInventoryRoute
   '/app/_layout/recipes': typeof AppLayoutRecipesRoute
   '/app/_layout/reports': typeof AppLayoutReportsRoute
+  '/app/_layout/recipe/$recipeId': typeof AppLayoutRecipeRecipeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
+    | '/app/recipe/$recipeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
+    | '/app/recipe/$recipeId'
   id:
     | '__root__'
     | '/'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/app/_layout/inventory'
     | '/app/_layout/recipes'
     | '/app/_layout/reports'
+    | '/app/_layout/recipe/$recipeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -241,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutDashboardRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/app/_layout/recipe/$recipeId': {
+      id: '/app/_layout/recipe/$recipeId'
+      path: '/recipe/$recipeId'
+      fullPath: '/app/recipe/$recipeId'
+      preLoaderRoute: typeof AppLayoutRecipeRecipeIdRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
   }
 }
 
@@ -250,6 +269,7 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutInventoryRoute: typeof AppLayoutInventoryRoute
   AppLayoutRecipesRoute: typeof AppLayoutRecipesRoute
   AppLayoutReportsRoute: typeof AppLayoutReportsRoute
+  AppLayoutRecipeRecipeIdRoute: typeof AppLayoutRecipeRecipeIdRoute
 }
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
@@ -258,6 +278,7 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutInventoryRoute: AppLayoutInventoryRoute,
   AppLayoutRecipesRoute: AppLayoutRecipesRoute,
   AppLayoutReportsRoute: AppLayoutReportsRoute,
+  AppLayoutRecipeRecipeIdRoute: AppLayoutRecipeRecipeIdRoute,
 }
 
 const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(

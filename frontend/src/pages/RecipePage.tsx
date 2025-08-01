@@ -1,30 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import RecipeList from "../components/RecipeList";
+import { useLoaderData } from "@tanstack/react-router";
+import type { Recipe } from "../lib/types";
 
 const RecipePage = () => {
-  const getRecipes = async () => {
-    const token = localStorage.getItem("access_token");
-    return axios.get("/api/recipes", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  };
+  const recipe: Recipe = useLoaderData({
+    from: "/app/_layout/recipe/$recipeId",
+  });
 
-  const recipeQuery = useQuery({ queryKey: ["recipes"], queryFn: getRecipes });
-
-  const { data, isPending, error } = recipeQuery;
-
+  const { ingredients, instructions } = recipe;
   return (
     <>
-      <h1 className="font-bold text-3xl">Recipes</h1>
-      {isPending && <h2>Fetching Recipes ...</h2>}
-      {error && (
-        <h2>An unexpected error has occured. Please try again later.</h2>
-      )}
-      {data && <RecipeList recipes={data.data.recipes}></RecipeList>}
+      <h1 className="font-bold text-4xl text-center capitalize">
+        {recipe.name}
+      </h1>
+
+      <h2 className="font-bold text-3xl text-center my-4">Ingredients</h2>
+      <ol className="text-center">
+        {ingredients.map((ing) => (
+          <li key={ing}>{ing}</li>
+        ))}
+      </ol>
+      <h2 className="font-bold text-3xl text-center">Instructions</h2>
+      <ol className="text-center">
+        {instructions.map((instruction, idx) => (
+          <li>
+            {idx + 1}. {instruction}
+          </li>
+        ))}
+      </ol>
     </>
   );
 };
+
 export default RecipePage;

@@ -33,3 +33,11 @@ export type PantryEntry = {
 };
 
 export type PantryEntryByProductName = Record<string, PantryEntry[]>;
+
+export type Recipe = {
+  canonical_ingredients: Ingredient[];
+  ingredients: string[];
+  instructions: string[];
+  name: string;
+  id: number;
+};

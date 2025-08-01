@@ -16,7 +16,7 @@ class Recipe(db.Model):
         sa.JSON, nullable=True
     )
 
-    ingredient_links: so.Mapped['RecipeIngredient'] = so.relationship(
+    ingredient_links: so.Mapped[list['RecipeIngredient']] = so.relationship(
         back_populates='recipe',
         cascade='all, delete-orphan'
     )
