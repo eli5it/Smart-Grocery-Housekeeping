@@ -87,3 +87,19 @@ def test_update_pantry_entry(client, auth_headers, test_user):
 
     assert response.status_code == 200
     assert response.get_json()['status'] == PantryStatus.OUT_OF_STOCK.value
+
+def test_get_pantry_stats_unauthorized(client, auth_headers):
+    """Unauthorized requests result in 401 API Response"""
+    response = client.get('/api/pantry/stats')
+    assert response.status_code == 401
+    
+def test_get_pantry_stats_empty(client, auth_headers):
+    """Stats for a user with a pantry are correct"""
+    response = client.get('/api/pantry/stats', headers = auth_headers)
+    response_json = response.get_json()
+    print(response_json)
+    assert 'total' in response_json
+    assert 'expired' in response_json
+    assert 'expiring' in response_json
+
+    
