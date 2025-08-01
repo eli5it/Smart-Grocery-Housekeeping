@@ -1,10 +1,9 @@
 import type { PantryEntry, PantryEntryByProductName } from "../lib/types";
 import PantryTable from "../components/PantryTable";
 import { useState } from "react";
-import InventoryAdditionView from "./Inventory_addition_page";
+import InventoryAdditionView from "./InventoryAdditionPage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { parseISO, differenceInDays } from "date-fns";
 import type { PantryStats } from "../lib/types";
 
 const InventoryPage = () => {
