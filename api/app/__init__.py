@@ -22,7 +22,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
     else:
         app.config.from_object(Config)
-
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
     CORS(app)
 
     # Initialize extensions with this app
