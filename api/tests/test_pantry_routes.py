@@ -82,11 +82,11 @@ def test_update_pantry_entry(client, auth_headers, test_user):
     db.session.commit()
 
     response = client.patch(f'/api/pantry/{entry.id}', json={
-        'status': 'out_of_stock'
+        'status': 'discarded'
     }, headers=auth_headers)
 
     assert response.status_code == 200
-    assert response.get_json()['status'] == PantryStatus.OUT_OF_STOCK.value
+    assert response.get_json()['status'] == PantryStatus.DISCARDED.value
 
 def test_get_pantry_stats_unauthorized(client, auth_headers):
     """Unauthorized requests result in 401 API Response"""
