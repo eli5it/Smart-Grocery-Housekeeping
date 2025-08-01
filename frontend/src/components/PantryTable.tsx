@@ -1,16 +1,23 @@
 import { useState } from "react";
 import type { PantryEntry, PantryEntryByProductName } from "../lib/types";
 import { cn } from "@udecode/cn";
-import { X, Pencil } from "lucide-react";
+import { X, Pencil, ActivityIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { queryClient } from "../lib/queryClient";
+import Popover from "./EntryPopover";
 
 type SubEntryProps = {
   entry: PantryEntry;
-  deleteEntry: (entryId: number) => void;
+  updateEntry: ({
+    entryId,
+    newStatus,
+  }: {
+    entryId: number;
+    newStatus: "used" | "discarded" | "deleted";
+  }) => void;
 };
-const SubEntry = ({ entry, deleteEntry }: SubEntryProps) => {
+const SubEntry = ({ entry, updateEntry }: SubEntryProps) => {
   const [editing, setEditing] = useState(false);
   return (
     <tr className="border-t border-gray-500">
@@ -23,9 +30,7 @@ const SubEntry = ({ entry, deleteEntry }: SubEntryProps) => {
         </button>
       </td>
       <td className="px-5">
-        <button onClick={() => deleteEntry(entry.id)}>
-          <X />
-        </button>
+        <Popover updateEntry={updateEntry} entryId={entry.id}></Popover>
       </td>
     </tr>
   );
@@ -33,11 +38,18 @@ const SubEntry = ({ entry, deleteEntry }: SubEntryProps) => {
 
 type PantryTableEntryProps = {
   entries: PantryEntry[];
-  deleteEntry: (entryId: number) => void;
+  updateEntry: ({
+    entryId,
+    newStatus,
+  }: {
+    entryId: number;
+    newStatus: "used" | "discarded" | "deleted";
+  }) => void;
 };
-const PantryTableEntry = ({ entries, deleteEntry }: PantryTableEntryProps) => {
+const PantryTableEntry = ({ entries, updateEntry }: PantryTableEntryProps) => {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   // this is emergency error handling, entries should always have a non-zero length
   if (entries.length === 0) {
     return <></>;
@@ -69,14 +81,12 @@ const PantryTableEntry = ({ entries, deleteEntry }: PantryTableEntryProps) => {
           </button>
         </td>
         <td>
-          <button onClick={() => deleteEntry(entries[0].id)} className="px-5">
-            <X />
-          </button>
+          <Popover entryId={entries[0].id} updateEntry={updateEntry} />
         </td>
       </tr>
       {expanded &&
         entries.slice(1).map((entry) => {
-          return <SubEntry deleteEntry={deleteEntry} entry={entry}></SubEntry>;
+          return <SubEntry updateEntry={updateEntry} entry={entry}></SubEntry>;
         })}
     </>
   );
@@ -86,22 +96,40 @@ type PantryTableProps = {
   pantryEntries: PantryEntryByProductName;
 };
 const PantryTable = ({ pantryEntries }: PantryTableProps) => {
-  const deletePantryEntry = (entryId: number) => {
+  const updatePantryEntry = async (vars: {
+    entryId: number;
+    newStatus: "discarded" | "used" | "deleted";
+  }) => {
     const token = localStorage.getItem("access_token");
-    return axios.delete(`/api/pantry/${entryId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+
+    if (vars.newStatus === "deleted") {
+      return axios.delete(`/api/pantry/${vars.entryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+    return axios.patch(
+      `/api/pantry/${vars.entryId}`,
+      {
+        status: vars.newStatus,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   };
 
-  const deleteMutation = useMutation({
-    mutationFn: deletePantryEntry,
+  const updateMutation = useMutation({
+    mutationFn: updatePantryEntry,
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["pantry"] });
     },
   });
+
   return (
     <>
       <div className="px-2 py-4 max-w-[800px]">
@@ -129,7 +157,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
           <tbody>
             {Object.keys(pantryEntries).map((product_name) => (
               <PantryTableEntry
-                deleteEntry={deleteMutation.mutate}
+                updateEntry={updateMutation.mutate}
                 entries={pantryEntries[product_name]}
               />
             ))}

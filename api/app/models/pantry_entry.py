@@ -11,7 +11,8 @@ if typing.TYPE_CHECKING:
 
 class PantryStatus(enum.StrEnum):
     IN_STOCK = "in_stock"
-    OUT_OF_STOCK = "out_of_stock"
+    DISCARDED = "discarded"
+    USED = "used"
 
 
 class PantryEntry(db.Model):
