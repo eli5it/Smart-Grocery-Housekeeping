@@ -221,7 +221,7 @@ def recommendation_setup(test_app, test_user):
                 user_id=test_user.id,
                 ingredient_id=pasta.id,
                 product_name="Spaghetti",
-                status=PantryStatus.OUT_OF_STOCK
+                status=PantryStatus.USED
             )
         ]
         db.session.add_all(pantry_entries)
