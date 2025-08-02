@@ -238,13 +238,27 @@ def pantry_stats():
 def get_expired_items():
     """Returns a list of expired items in a user's pantry"""
     today = date.today()
+    expiring_threshold = today + timedelta(days=3)
+
 
     user_id = get_jwt_identity()
-    pantry_items = PantryEntry.query.filter(
+    expired_items = PantryEntry.query.filter(
         and_(
             PantryEntry.user_id == user_id,
             PantryEntry.expiration_date < today,
             PantryEntry.status == PantryStatus.IN_STOCK
-        ))
+        )).all()
+    expiring_items = PantryEntry.query.filter(
+        and_(
+            PantryEntry.user_id == user_id,
+            PantryEntry.expiration_date >= today,
+            PantryEntry.expiration_date <= expiring_threshold,
+            PantryEntry.status == PantryStatus.IN_STOCK
+        )).all()
   
-    return jsonify(pantry_entries_schema.dump(pantry_items)), 200
+    return jsonify(
+        {
+            "expiring_items": pantry_entries_schema.dump(expiring_items),
+            "expired_items" : pantry_entries_schema.dump(expired_items)
+        })
+        
