@@ -18,7 +18,6 @@ reports_bp = Blueprint('reports', __name__)
 @reports_bp.route('/reports/wasted-items', methods=['GET'])
 @jwt_required()
 def get_wasted_items():
-
     user_id = int(get_jwt_identity())
     today = date.today()
 
