@@ -10,15 +10,6 @@ const PantryItemList = ({
   pantryItems,
   setPantryItems,
 }: PantryItemListProps) => {
-  const submitHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
-    // submit changes to the db
-    e.preventDefault();
-
-    // on succesful change redirect to dashboard?
-
-    // on unsuccesful change,display toast?
-  };
-
   return (
     <>
       {pantryItems.length > 0 && (
