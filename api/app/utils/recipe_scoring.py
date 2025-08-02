@@ -5,14 +5,21 @@ from sqlalchemy.orm import Session
 
 
 def score_recipes(session: Session, user_id: int):
+    """
+    Recipe scoring algorithm that recommends recipes based on pantry
+    ingredients. Prioritizes recipes using ingredients nearing expiration
+    to reduce food waste.
+    """
     today = date.today()
     near_expiration_threshold = today + timedelta(days=7)
 
+    # Step 1: Get valid pantry ingredients with expiration weighting
     valid_pantry_sub = session.query(
         PantryEntry.ingredient_id,
         sa.case(
+            # Near expiration: weight = 2
             (PantryEntry.expiration_date <= near_expiration_threshold, 2),
-            else_=1
+            else_=1  # Standard weight = 1
         ).label('weight')
     ).filter(
         PantryEntry.user_id == user_id,
@@ -23,11 +30,13 @@ def score_recipes(session: Session, user_id: int):
         )
     ).subquery()
 
+    # Step 2: Count total ingredients per recipe
     total_ingredients_sub = session.query(
         RecipeIngredient.recipe_id,
         sa.func.count(RecipeIngredient.ingredient_id).label('total_count')
     ).group_by(RecipeIngredient.recipe_id).subquery()
 
+    # Step 3: Calculate matching ingredient scores
     matching_ingredients_sub = session.query(
         RecipeIngredient.recipe_id,
         sa.func.sum(valid_pantry_sub.c.weight).label('match_score')
@@ -36,10 +45,12 @@ def score_recipes(session: Session, user_id: int):
         valid_pantry_sub.c.ingredient_id == RecipeIngredient.ingredient_id
     ).group_by(RecipeIngredient.recipe_id).subquery()
 
+    # Step 4: Calculate final normalized scores and rank recipes
     scored = session.query(
         Recipe,
         matching_ingredients_sub.c.match_score,
         total_ingredients_sub.c.total_count,
+        # Normalized score: 0-1
         (matching_ingredients_sub.c.match_score * 1.0 /
          total_ingredients_sub.c.total_count).label('score')
     ).join(
