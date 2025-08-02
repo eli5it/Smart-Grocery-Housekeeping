@@ -8,3 +8,11 @@
     --color-light-blue: #CAFEFF;
     --color-light-red: #FFAFAF;
 }
+
+/* Override barcode-scanner default styles */
+video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 0.75rem; 
+}

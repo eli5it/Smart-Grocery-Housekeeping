@@ -1,5 +1,6 @@
 import type { PantryItem } from "../lib/types";
 import { useState } from "react";
+import { format } from "date-fns";
 
 type PantryItemListElement = {
   pantryItem: PantryItem;
@@ -15,6 +16,9 @@ const PantryItemListElement = ({
   const { product_name, image_url, ingredient_name, barcode } = pantryItem;
   const [productName, setProductName] = useState(product_name);
   const [ingredientName, setIngredientName] = useState(ingredient_name);
+  const [expirationDate, setExpirationDate] = useState(
+    format(new Date(), "yyyy-MM-dd")
+  );
 
   const newItem = {
     barcode,
@@ -34,15 +38,6 @@ const PantryItemListElement = ({
   return (
     <li className="bg-gray-200 px-3 py-3 max-w-[400px]">
       <form className="flex items-center gap-4">
-        {image_url ? (
-          <img
-            className="rounded-md w-20 h-20"
-            src={image_url}
-            alt={`A picture of ${product_name}`}
-          />
-        ) : (
-          <div className="bg-gray-300 w-20 h-20 rounded-md"></div>
-        )}
         <div className="flex flex-col gap-2">
           <label>
             Product Name:
@@ -60,6 +55,15 @@ const PantryItemListElement = ({
               value={ingredientName}
               onChange={(e) => setIngredientName(e.target.value)}
               type="text"
+            />
+          </label>
+          <label>
+            Expiration Date:
+            <input
+              className="block outline-blue-300 border border-black w-full"
+              value={expirationDate}
+              onChange={(e) => setExpirationDate(e.target.value)}
+              type="date"
             />
           </label>
         </div>

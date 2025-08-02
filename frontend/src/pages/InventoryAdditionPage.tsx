@@ -1,7 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { cn } from "@udecode/cn";
 import BarcodeScanner from "react-qr-barcode-scanner";
-import ModalContainer from "../components/ModalContainer";
 import { useMutation } from "@tanstack/react-query";
 import type { ToastDetails } from "../lib/types";
 import type { PantryItem } from "../lib/types";
@@ -11,11 +10,88 @@ import PantryItemList from "../components/PantryItemList";
 import PantryItemListElement from "../components/PantryItemListElement";
 import { useNavigate } from "@tanstack/react-router";
 
-const CameraView = () => {
+type CameraViewProps = {
+  setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
+  pantryItems: PantryItem[];
+};
+
+import Webcam from "react-webcam";
+
+const videoConstraints = {
+  width: 600,
+  height: 400,
+  facingMode: "user",
+};
+
+// send base64 image to the frontend
+const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
+  const [displayCamera, setDisplayCamera] = useState(false);
+
+  const uploadImage = (base64String: string) => {
+    const token = localStorage.getItem("access_token");
+    return axios.post("/api/vision/analyze", {
+      image: base64String,
+      mode: "image",
+    });
+  };
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadImage,
+    onSuccess: (response, barcode) => {
+      alert("added item to your pantry");
+      console.log(response);
+    },
+    onError: (err, barcode) => {
+      // need to have user input missing information manually
+      const newPantryItem: PantryItem = {
+        barcode,
+        product_name: "",
+        ingredient_name: "",
+        image_url: "",
+      };
+      setPantryItems([...pantryItems, newPantryItem]);
+    },
+  });
+
+  const webcamRef = useRef(null);
+  const capture = useCallback(() => {
+    //@ts-ignore
+    const imageSrc = webcamRef?.current?.getScreenshot();
+
+    if (imageSrc) {
+      const base64Data = imageSrc.replace(/^data:image\/\w+;base64,/, "");
+      uploadMutation.mutate(base64Data);
+    }
+  }, [webcamRef]);
+
   return (
     <>
-      <div className="w-40 h-40 rounded-lg bg-gray-500 m-auto"></div>
-      <p className="text-center">Upload Image above</p>
+      <div className="flex flex-col items-center">
+        <div className="border border-black w-[360px] h-[200px] rounded-xl">
+          <Webcam
+            className="max-w-[500px] w-[500px]"
+            audio={false}
+            height={400}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            width={600}
+            videoConstraints={videoConstraints}
+          />
+        </div>
+        <h2 className="font-semibold">Capture Item</h2>
+        <p className="text-center">
+          Take a screenshot of the food product you'd like to add to your
+          pantry.
+        </p>
+        <button
+          onClick={capture}
+          className="px-4 py-2 rounded-xl bg-blue-500 text-white font-bold"
+        >
+          Take Screenshot
+        </button>
+      </div>
+
+      <button onClick={capture}>Capture photo</button>
     </>
   );
 };
@@ -70,7 +146,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
   });
 
   const clickHandler = () => {
-    setDisplayCamera(true);
+    setDisplayCamera(!displayCamera);
   };
 
   const updateHandler = (err: any, result: any) => {
@@ -94,31 +170,20 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
 
   return (
     <>
-      {displayCamera && (
-        <ModalContainer close={() => setDisplayCamera(false)}>
-          <div className="flex items-center py-30 flex-col">
-            <h1 className="font-bold text-3xl mb-3">
-              Make sure the barcode is visible for your scan
-            </h1>
-            <BarcodeScanner width={500} height={500} onUpdate={updateHandler} />
-            <button className="text-white bg-blue-700 font-bold px-2 py-3 rounded-3xl mt-3">
-              Close Camera
-            </button>
-          </div>
-        </ModalContainer>
-      )}
       <div className="flex flex-col items-center">
-        <div className="border border-black w-[360px] h-[200px] rounded-xl"></div>
+        <div className="border border-black w-[360px] h-[200px] rounded-xl">
+          {displayCamera && <BarcodeScanner onUpdate={updateHandler} />}
+        </div>
         <h2 className="font-semibold">Capture Item</h2>
-        <p>
+        <p className="text-center">
           Place the barcode of your item in view of your camera, and it's
-          details will be filled
+          details will be filled in.
         </p>
         <button
           onClick={clickHandler}
           className="px-4 py-2 rounded-xl bg-blue-500 text-white font-bold"
         >
-          Open camera
+          {displayCamera ? "Close" : "Open"} camera
         </button>
       </div>
       <Toaster
@@ -248,7 +313,9 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
           pantryItems={pantryItems}
         />
       )}
-      {mode === "camera" && <CameraView />}
+      {mode === "camera" && (
+        <CameraView setPantryItems={setPantryItems} pantryItems={pantryItems} />
+      )}
       {pantryItems.length !== 0 && (
         <h3 className="font-bold text-2xl text-center py-2">
           New Pantry items
