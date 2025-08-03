@@ -4,9 +4,7 @@ import { Link } from "@tanstack/react-router";
 const RegisterPage = () => {
   return (
     <div className="text-white min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 pt-10">
-      <h1 className="font-bold text-3xl text-center">
-        Placeholder register page
-      </h1>
+      <h1 className="font-bold text-3xl text-center">Register page</h1>
       <div className="my-4">
         <RegisterForm></RegisterForm>
         <p className="text-center my-4 ">
