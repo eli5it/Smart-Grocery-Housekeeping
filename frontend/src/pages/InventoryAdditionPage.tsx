@@ -228,6 +228,7 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
       const newPantryItems = pantryItems.map((item) => ({
         name: item.ingredient_name,
         product_name: item.product_name,
+        expiration_date: item.expiration_date,
       }));
       return axios.post(
         "/api/pantry",
