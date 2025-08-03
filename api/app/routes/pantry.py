@@ -76,9 +76,11 @@ def add_pantry_entry():
     for pantry_entry in payload.pantry_entries:
         ingredient_name = pantry_entry.name
         expiration_date = pantry_entry.expiration_date
+        product_name = pantry_entry.product_name
         new_entry = PantryEntry(
             ingredient_id= ingredient_map[ingredient_name].id,
             user_id=user_id,
+            product_name=product_name,
             expiration_date=(
                 date.fromisoformat(expiration_date)
                 if expiration_date else None

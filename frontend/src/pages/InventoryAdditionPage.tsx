@@ -9,13 +9,12 @@ import Toaster from "../components/Toaster";
 import PantryItemList from "../components/PantryItemList";
 import PantryItemListElement from "../components/PantryItemListElement";
 import { useNavigate } from "@tanstack/react-router";
+import Webcam from "react-webcam";
 
 type CameraViewProps = {
   setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
   pantryItems: PantryItem[];
 };
-
-import Webcam from "react-webcam";
 
 const videoConstraints = {
   width: 600,
@@ -25,10 +24,7 @@ const videoConstraints = {
 
 // send base64 image to the frontend
 const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
-  const [displayCamera, setDisplayCamera] = useState(false);
-
   const uploadImage = (base64String: string) => {
-    const token = localStorage.getItem("access_token");
     return axios.post("/api/vision/analyze", {
       image: base64String,
       mode: "image",
@@ -79,7 +75,7 @@ const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
           />
         </div>
         <h2 className="font-semibold">Capture Item</h2>
-        <p className="text-center">
+        <p className="text-center my-2">
           Take a screenshot of the food product you'd like to add to your
           pantry.
         </p>
@@ -90,8 +86,6 @@ const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
           Take Screenshot
         </button>
       </div>
-
-      <button onClick={capture}>Capture photo</button>
     </>
   );
 };
@@ -109,7 +103,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
     description: "",
   });
 
-  // use ref instead of state prevent excessive re-renders when scanning barcodes
+  // use ref instead of state to prevent excessive re-renders when scanning barcodes
   const attemptedBarcodesRef = useRef(
     new Set<string>(
       //@ts-ignore
@@ -175,7 +169,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
           {displayCamera && <BarcodeScanner onUpdate={updateHandler} />}
         </div>
         <h2 className="font-semibold">Capture Item</h2>
-        <p className="text-center">
+        <p className="text-center my-2">
           Place the barcode of your item in view of your camera, and it's
           details will be filled in.
         </p>
@@ -204,11 +198,8 @@ const ManualView = ({ setPantryItems }: ManualViewProps) => {
     barcode: "",
     product_name: "",
     ingredient_name: "",
+    expiration_date: new Date().toISOString().split("T")[0],
   };
-
-  const navigate = useNavigate({
-    from: "/login",
-  });
 
   return (
     <>
@@ -251,7 +242,7 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
     onSuccess: () => {
       alert("succesfully added ingredient to DB");
       navigate({
-        to: "/app/dashboard",
+        to: "/app/inventory",
       });
     },
   });
@@ -317,14 +308,17 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
         <CameraView setPantryItems={setPantryItems} pantryItems={pantryItems} />
       )}
       {pantryItems.length !== 0 && (
-        <h3 className="font-bold text-2xl text-center py-2">
+        <h3 className="font-bold text-2xl text-center mt-8">
           New Pantry items
         </h3>
       )}
-      <PantryItemList
-        setPantryItems={setPantryItems}
-        pantryItems={pantryItems}
-      ></PantryItemList>
+      <div className="flex justify-center">
+        <PantryItemList
+          setPantryItems={setPantryItems}
+          pantryItems={pantryItems}
+        ></PantryItemList>
+      </div>
+
       {pantryItems.length !== 0 && (
         <div className="flex justify-center">
           <button
