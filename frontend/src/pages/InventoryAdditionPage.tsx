@@ -142,7 +142,14 @@ const BarcodeView = ({
       return axios.get<PantryItem>(`/api/barcode-lookup/?barcode=${barcode}`);
     },
     onSuccess: (response, barcode) => {
-      setPantryItems([...pantryItems, { ...response.data, barcode }]);
+      setPantryItems([
+        ...pantryItems,
+        {
+          ...response.data,
+          barcode,
+          expiration_date: format(new Date(), "yyyy-MM-dd"),
+        },
+      ]);
       setShowToast(true);
       setToastDetails({
         title: `Added ${response.data.product_name} to pantry!`,
