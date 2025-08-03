@@ -47,18 +47,20 @@ const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
 
   if (pantryItems) {
     return (
-      <div className="bg-white m-auto w-[40%]">
-        <p>{mode} Items</p>
-        <ul>
-          {Object.keys(pantryObject).map((key) => {
-            return (
-              <li key={key}>
-                <span>{pantryObject[key].length}x</span>
-                <span>{key}</span>
-              </li>
-            );
-          })}
-        </ul>
+      <div className="h-full w-full flex justify-center items-center">
+        <div className="bg-white m-auto w-[40%] px-3 py-2 rounded-2xl">
+          <p className="font-bold text-center capitalize my-2 ">{mode} Items</p>
+          <ul className="max-h-[350px] overflow-scroll">
+            {Object.keys(pantryObject).map((key) => {
+              return (
+                <li key={key}>
+                  <span className="mr-2">{pantryObject[key].length}x</span>
+                  <span>{key}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     );
   }

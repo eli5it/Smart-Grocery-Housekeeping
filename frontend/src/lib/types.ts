@@ -21,6 +21,12 @@ export type Ingredient = {
   name: string;
 };
 
+export type WastedIngredient = {
+  date_added: string;
+  expiration_date: string;
+  ingredient_name: string;
+};
+
 export type PantryEntry = {
   id: number;
   date_added: string;

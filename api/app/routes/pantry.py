@@ -204,7 +204,6 @@ def pantry_stats():
                 func.sum(
                     case(
                         (
-                            (PantryEntry.expiration_date >= threshold) &
                             (PantryEntry.status == PantryStatus.IN_STOCK)
                             ,1
                         ),
