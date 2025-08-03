@@ -10,10 +10,14 @@ import PantryItemList from "../components/PantryItemList";
 import PantryItemListElement from "../components/PantryItemListElement";
 import { useNavigate } from "@tanstack/react-router";
 import Webcam from "react-webcam";
+import { queryClient } from "../lib/queryClient";
+import { format } from "date-fns";
 
 type CameraViewProps = {
   setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
   pantryItems: PantryItem[];
+  setToastDetails: React.Dispatch<React.SetStateAction<ToastDetails>>;
+  setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const videoConstraints = {
@@ -23,9 +27,14 @@ const videoConstraints = {
 };
 
 // send base64 image to the frontend
-const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
+const CameraView = ({
+  setPantryItems,
+  pantryItems,
+  setShowToast,
+  setToastDetails,
+}: CameraViewProps) => {
   const uploadImage = (base64String: string) => {
-    return axios.post("/api/vision/analyze", {
+    return axios.post<{ ingredient: string }>("/api/vision/analyze", {
       image: base64String,
       mode: "image",
     });
@@ -34,8 +43,18 @@ const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
   const uploadMutation = useMutation({
     mutationFn: uploadImage,
     onSuccess: (response, barcode) => {
-      alert("added item to your pantry");
-      console.log(response);
+      setShowToast(true);
+      setToastDetails({
+        title: "Succesfully Scanned image",
+        description: "Make modifications as necessary.",
+      });
+      const { ingredient } = response.data;
+      const newPantryItem: PantryItem = {
+        product_name: ingredient,
+        ingredient_name: ingredient,
+        expiration_date: format(new Date(), "yyyy-MM-dd"),
+      };
+      setPantryItems((prev) => [...prev, newPantryItem]);
     },
     onError: (err, barcode) => {
       // need to have user input missing information manually
@@ -44,7 +63,13 @@ const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
         product_name: "",
         ingredient_name: "",
         image_url: "",
+        expiration_date: format(new Date(), "yyyy-MM-dd"),
       };
+      setShowToast(true);
+      setToastDetails({
+        title: "Failed to Scan image",
+        description: "Enter details manually below",
+      });
       setPantryItems([...pantryItems, newPantryItem]);
     },
   });
@@ -93,15 +118,17 @@ const CameraView = ({ setPantryItems, pantryItems }: CameraViewProps) => {
 type BarcodeViewProps = {
   setPantryItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
   pantryItems: PantryItem[];
+  setToastDetails: React.Dispatch<React.SetStateAction<ToastDetails>>;
+  setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
+const BarcodeView = ({
+  pantryItems,
+  setPantryItems,
+  setToastDetails,
+  setShowToast,
+}: BarcodeViewProps) => {
   const [displayCamera, setDisplayCamera] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastDetails, setShowToastDetails] = useState<ToastDetails>({
-    title: "",
-    description: "",
-  });
 
   // use ref instead of state to prevent excessive re-renders when scanning barcodes
   const attemptedBarcodesRef = useRef(
@@ -117,7 +144,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
     onSuccess: (response, barcode) => {
       setPantryItems([...pantryItems, { ...response.data, barcode }]);
       setShowToast(true);
-      setShowToastDetails({
+      setToastDetails({
         title: `Added ${response.data.product_name} to pantry!`,
         description: "",
       });
@@ -129,10 +156,11 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         product_name: "",
         ingredient_name: "",
         image_url: "",
+        expiration_date: format(new Date(), "yyyy-MM-dd"),
       };
       setPantryItems([...pantryItems, newPantryItem]);
       setShowToast(true);
-      setShowToastDetails({
+      setToastDetails({
         title: `Added pantry item with barcode ${barcode} to pantry!`,
         description: "You will need to fill out the rest of it's details",
       });
@@ -154,7 +182,7 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
         pantryItems.some((pantryItem) => pantryItem.barcode === barcode)
       ) {
         setShowToast(true);
-        setShowToastDetails({
+        setToastDetails({
           title: "Already added item to pantry",
           description: "Add a new item?",
         });
@@ -180,11 +208,6 @@ const BarcodeView = ({ pantryItems, setPantryItems }: BarcodeViewProps) => {
           {displayCamera ? "Close" : "Open"} camera
         </button>
       </div>
-      <Toaster
-        toastDetails={toastDetails}
-        showToast={showToast}
-        setShowToast={setShowToast}
-      />
     </>
   );
 };
@@ -221,6 +244,11 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
   const [mode, setMode] = useState<"camera" | "barcode" | "manual">("barcode");
   // will store all scanned / manually added items
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([]);
+  const [showToast, setShowToast] = useState(false);
+  const [toastDetails, setToastDetails] = useState<ToastDetails>({
+    title: "",
+    description: "",
+  });
 
   const pantryMutation = useMutation({
     mutationFn: () => {
@@ -241,14 +269,10 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
       );
     },
     onSuccess: () => {
-      alert("succesfully added ingredient to DB");
-      navigate({
-        to: "/app/inventory",
-      });
+      queryClient.invalidateQueries({ queryKey: ["pantry"] });
+      switchView();
     },
   });
-
-  const navigate = useNavigate({ from: "/app/inventory" });
 
   const addPantryItem = () => {
     pantryMutation.mutate();
@@ -303,10 +327,17 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
         <BarcodeView
           setPantryItems={setPantryItems}
           pantryItems={pantryItems}
+          setShowToast={setShowToast}
+          setToastDetails={setToastDetails}
         />
       )}
       {mode === "camera" && (
-        <CameraView setPantryItems={setPantryItems} pantryItems={pantryItems} />
+        <CameraView
+          setToastDetails={setToastDetails}
+          setShowToast={setShowToast}
+          setPantryItems={setPantryItems}
+          pantryItems={pantryItems}
+        />
       )}
       {pantryItems.length !== 0 && (
         <h3 className="font-bold text-2xl text-center mt-8">
@@ -330,6 +361,11 @@ const InventoryPage = ({ switchView }: InventoryPageProps) => {
           </button>
         </div>
       )}
+      <Toaster
+        toastDetails={toastDetails}
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
     </>
   );
 };
