@@ -2,7 +2,7 @@ from datetime import date
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import sqlalchemy as sa
-from sqlalchemy import func, case
+from sqlalchemy import func, case, and_
 from app import db
 from app.models.ingredient import Ingredient
 from app.models.pantry_entry import PantryEntry, PantryStatus
@@ -204,7 +204,6 @@ def pantry_stats():
                 func.sum(
                     case(
                         (
-                            (PantryEntry.expiration_date >= threshold) &
                             (PantryEntry.status == PantryStatus.IN_STOCK)
                             ,1
                         ),
@@ -231,3 +230,34 @@ def pantry_stats():
         "discard": stats.discarded,
         "available": stats.available
     })
+
+
+@pantry_bp.route('/pantry/expired', methods=['GET'])
+@jwt_required()
+def get_expired_items():
+    """Returns a list of expired items in a user's pantry"""
+    today = date.today()
+    expiring_threshold = today + timedelta(days=3)
+
+
+    user_id = get_jwt_identity()
+    expired_items = PantryEntry.query.filter(
+        and_(
+            PantryEntry.user_id == user_id,
+            PantryEntry.expiration_date < today,
+            PantryEntry.status == PantryStatus.IN_STOCK
+        )).all()
+    expiring_items = PantryEntry.query.filter(
+        and_(
+            PantryEntry.user_id == user_id,
+            PantryEntry.expiration_date >= today,
+            PantryEntry.expiration_date <= expiring_threshold,
+            PantryEntry.status == PantryStatus.IN_STOCK
+        )).all()
+  
+    return jsonify(
+        {
+            "expiring_items": pantry_entries_schema.dump(expiring_items),
+            "expired_items" : pantry_entries_schema.dump(expired_items)
+        })
+        
