@@ -28,8 +28,6 @@ const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
 
   const { data } = expiredQuery;
 
-  console.log(data);
-
   const pantryItems = data?.data[`${mode}_items`];
 
   let pantryObject: { [productName: string]: PantryEntry[] } = {};
@@ -44,6 +42,8 @@ const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
       return prev;
     }, pantryObject);
   }
+
+  console.log(mode);
 
   if (pantryItems) {
     return (

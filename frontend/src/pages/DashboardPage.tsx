@@ -32,7 +32,7 @@ const DashboardPage = () => {
         <div className="flex justify-center gap-4">
           <div className="flex flex-col flex-1/2">
             <button
-              onClick={() => setShowExpired(true)}
+              onClick={() => setShowExpiring(true)}
               className="bg-lighter-green px-6 py-6 lg:py-12 mb-6 rounded-lg flex gap-2 flex-1/2"
             >
               <img
@@ -45,7 +45,7 @@ const DashboardPage = () => {
               </p>
             </button>
             <button
-              onClick={() => setShowExpiring(true)}
+              onClick={() => setShowExpired(true)}
               className="bg-light-blue flex flex-1/2 rounded-lg min-h-[112px] px-6 py-6 gap-2"
             >
               <img

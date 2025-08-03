@@ -4,6 +4,7 @@ import { cn } from "@udecode/cn";
 import ModalContainer from "./ModalContainer";
 import { House, ChefHat, Camera, ClipboardMinus, Milk } from "lucide-react";
 import "./SidebarIcon.css";
+import { Apple } from "lucide-react";
 
 type MobileSidebarProps = {
   toggleSidebarVisibility: () => void;
@@ -33,9 +34,6 @@ const MobileSidebar = ({
                 <Link to="/app/dashboard">Dashboard</Link>
               </li>
               <li className="hover:text-blue-800">
-                <Link to="/app/groceries">Groceries</Link>
-              </li>
-              <li className="hover:text-blue-800">
                 <Link to="/app/inventory">Inventory</Link>
               </li>
               <li className="hover:text-blue-800">
@@ -56,8 +54,8 @@ const DesktopSidebar = () => {
   return (
     <aside className="hidden px-10 md:flex md:flex-col md:absolute">
       <div className="flex items-center gap-2 mb-5">
-        <div className="w-10 h-10 rounded-full border border-black"></div>
-        <p>Hi, Friend {";)"}</p>
+        <Apple />
+        <p>Welcome back!</p>
       </div>
       <ul className="flex flex-col gap-3 px-2.5">
         <li className="flex text-xl gap-1.5 items-center">
@@ -70,12 +68,6 @@ const DesktopSidebar = () => {
           <Camera />
           <Link className="hover:text-blue-700" to="/app/inventory">
             Inventory
-          </Link>
-        </li>
-        <li className="flex text-xl gap-1.5 items-center">
-          <Milk />
-          <Link className="hover:text-blue-700" to="/app/groceries">
-            Groceries
           </Link>
         </li>
         <li className="flex text-xl gap-1.5 items-center">
