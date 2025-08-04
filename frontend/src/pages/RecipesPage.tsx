@@ -23,20 +23,16 @@ const RecipePage = () => {
       <p className="text-lg text-gray-600 text-center mb-8">
         Recommended for you based on your pantry
       </p>
-  
+
       {isPending && <p className="text-center">Fetching recipes...</p>}
       {error && (
         <p className="text-center text-red-500">
           An unexpected error has occurred. Please try again later.
         </p>
       )}
-  
-      {data && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <RecipeList recipes={data.data.recipes} />
-        </div>
-      )}
+
+      {data && <RecipeList recipes={data.data.recipes} />}
     </div>
-  );  
+  );
 };
 export default RecipePage;
