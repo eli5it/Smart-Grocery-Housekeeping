@@ -10,7 +10,7 @@ const Toaster = ({ showToast, setShowToast, toastDetails }: ToasterProps) => {
   return (
     <Toast.Root
       open={showToast}
-      className="bg-white px-10 pb-3 pt-20 rounded-md relative"
+      className="bg-white px-10 pb-3 pt-20 rounded-md relative border border-gray-600"
       duration={3000}
       onOpenChange={setShowToast}
     >
