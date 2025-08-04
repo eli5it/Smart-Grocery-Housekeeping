@@ -1,17 +1,20 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "@tanstack/react-router";
+import Toaster from "./Toaster";
+import type { ToastDetails } from "../lib/types";
 
 const LoginForm = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showToast, setShowToast] = useState(false);
+
   const navigate = useNavigate({
     from: "/login",
   });
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // let React handle the form submission
     try {
       const res = await axios.post("/api/login", {
         username,
@@ -22,11 +25,21 @@ const LoginForm = () => {
       navigate({
         to: "/app/dashboard",
       });
-    } catch (err) {}
+    } catch (err) {
+      setShowToast(true);
+    }
   };
 
   return (
     <>
+      <Toaster
+        toastDetails={{
+          description: "Please try again.",
+          title: "Incorrect username/password ",
+        }}
+        showToast={showToast}
+        setShowToast={setShowToast}
+      />
       <form onSubmit={submitHandler} className="flex flex-col items-center">
         <label htmlFor="username">Username</label>
         <input
