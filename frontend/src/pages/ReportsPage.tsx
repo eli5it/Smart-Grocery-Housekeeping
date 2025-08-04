@@ -82,7 +82,7 @@ const ReportsPage = () => {
         </div>
       </div>
       <h2 className="font-bold text-3xl my-6">Charts</h2>
-      <section className="h-[240px] md:flex">
+      <section className="flex flex-col items-center md:flex-row">
         {currentPieChartData && <PieChart data={currentPieChartData} />}
         {outOfStockPieChartData && <PieChart data={outOfStockPieChartData} />}
       </section>

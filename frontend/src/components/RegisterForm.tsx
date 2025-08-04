@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "@tanstack/react-router";
+import Toaster from "./Toaster";
+import type { ToastDetails } from "../lib/types";
 
 type RegisterResponse = {
   msg: string;
@@ -11,6 +13,11 @@ const RegisterForm = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastDetails, setToastDetails] = useState<ToastDetails>({
+    title: "Invalid combination",
+    description: "Please enter valid credentials",
+  });
 
   const navigate = useNavigate({
     from: "/register",
@@ -21,7 +28,11 @@ const RegisterForm = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords don't match my friend!");
+      setShowToast(true);
+      setToastDetails({
+        title: "Passwords don't match!",
+        description: "Try again with matching passwords",
+      });
       return;
     }
 
@@ -38,12 +49,21 @@ const RegisterForm = () => {
         to: "/app/dashboard",
       });
     } catch (err) {
-      console.log(err);
+      setShowToast(true);
+      setToastDetails({
+        title: "Invalid username and or password",
+        description: "Please try again with valid credentials",
+      });
     }
   };
 
   return (
     <>
+      <Toaster
+        showToast={showToast}
+        setShowToast={setShowToast}
+        toastDetails={toastDetails}
+      />
       <form
         onSubmit={submitHandler}
         className="flex flex-col items-center gap-1"
