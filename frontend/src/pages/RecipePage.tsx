@@ -8,27 +8,30 @@ const RecipePage = () => {
 
   const { ingredients, instructions } = recipe;
   return (
-    <>
-      <h1 className="font-bold text-4xl text-center capitalize">
+    <div className="max-w-3xl mx-auto bg-white p-6 mt-6 shadow-lg rounded-xl">
+      <h1 className="font-bold text-4xl text-center capitalize mb-6">
         {recipe.name}
       </h1>
-
-      <h2 className="font-bold text-3xl text-center my-4">Ingredients</h2>
-      <ol className="text-center">
-        {ingredients.map((ing) => (
-          <li key={ing}>{ing}</li>
-        ))}
-      </ol>
-      <h2 className="font-bold text-3xl text-center">Instructions</h2>
-      <ol className="text-center">
-        {instructions.map((instruction, idx) => (
-          <li>
-            {idx + 1}. {instruction}
-          </li>
-        ))}
-      </ol>
-    </>
-  );
+  
+      <section className="mb-8">
+        <h2 className="font-semibold text-2xl mb-4">Ingredients</h2>
+        <ul className="list-disc list-inside space-y-1">
+          {ingredients.map((ing) => (
+            <li key={ing}>{ing}</li>
+          ))}
+        </ul>
+      </section>
+  
+      <section>
+        <h2 className="font-semibold text-2xl mb-4">Instructions</h2>
+        <ol className="list-decimal list-inside space-y-2">
+          {instructions.map((instruction, idx) => (
+            <li key={idx}>{instruction}</li>
+          ))}
+        </ol>
+      </section>
+    </div>
+  );  
 };
 
 export default RecipePage;
