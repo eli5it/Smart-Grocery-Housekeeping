@@ -70,25 +70,27 @@ type ChartProps = {
 };
 const Chart = ({ data }: ChartProps) => {
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart margin={{ bottom: 10 }} width={400} height={400}>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={renderCustomizedLabel}
-          outerRadius={80}
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {data.map((entry) => (
-            <Cell key={`cell-${entry.name}`} fill={entry.color} />
-          ))}
-        </Pie>
-        <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="min-h-[240px] h-[240px] md:inline-block w-full md:w-[400px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart margin={{ bottom: 10 }} width={400} height={400}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={renderCustomizedLabel}
+            outerRadius={80}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry) => (
+              <Cell key={`cell-${entry.name}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
