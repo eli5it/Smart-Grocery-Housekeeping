@@ -1,7 +1,9 @@
 import type { PantryStats } from "../lib/types";
+
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import PieChart from "./PieChart";
+import PieChart from "../components/PieChart";
+import RecentWaste from "../components/RecentWaste";
 
 const ReportsPage = () => {
   const getStats = () => {
@@ -12,6 +14,7 @@ const ReportsPage = () => {
       },
     });
   };
+
   const statsQuery = useQuery({ queryKey: ["stats"], queryFn: getStats });
 
   const { data: data } = statsQuery;
@@ -62,26 +65,30 @@ const ReportsPage = () => {
         <div className="bg-light-green flex-1 px-4 py-2 lg:py-4 rounded-lg text-center flex flex-col justify-between">
           <p className="text-xl lg:text-2xl lg:mb-4">Items in Pantry</p>
           <p className="font-bold text-lg lg:text-2xl">
-            {stats ? stats.total : ""}
+            {stats ? stats.available : ""}
           </p>
         </div>
         <div className="bg-yellow flex-1 px-4 py-2 lg:py-4 rounded-lg text-center flex flex-col justify-between">
           <p className="text-xl lg:text-2xl lg:mb-4">Expiring Soon</p>
           <p className="font-bold text-lg lg:text-2xl">
-            {stats ? stats.total : ""}
+            {stats ? stats.expiring : ""}
           </p>
         </div>
         <div className="bg-light-red flex-1 px-4 py-2 lg:py-4 rounded-lg text-center flex flex-col justify-between">
           <p className="text-xl lg:text-2xl lg:mb-4">Expired</p>
           <p className="font-bold text-lg lg:text-2xl">
-            {stats ? stats.total : ""}
+            {stats ? stats.expired : ""}
           </p>
         </div>
       </div>
       <h2 className="font-bold text-3xl my-6">Charts</h2>
-      <section className="h-[240px] md:flex">
+      <section className="flex flex-col items-center md:flex-row">
         {currentPieChartData && <PieChart data={currentPieChartData} />}
         {outOfStockPieChartData && <PieChart data={outOfStockPieChartData} />}
+      </section>
+      <section>
+        <h2 className="font-bold text-3xl my-6">Tables</h2>
+        <RecentWaste />
       </section>
     </>
   );

@@ -8,6 +8,7 @@ export type PantryItem = {
   product_name: string;
   ingredient_name: string;
   image_url?: string;
+  expiration_date: string;
 };
 
 export type PantryListItem = {
@@ -19,6 +20,12 @@ export type PantryListItem = {
 export type Ingredient = {
   id: number;
   name: string;
+};
+
+export type WastedIngredient = {
+  date_added: string;
+  expiration_date: string;
+  ingredient_name: string;
 };
 
 export type PantryEntry = {

@@ -18,7 +18,6 @@ reports_bp = Blueprint('reports', __name__)
 @reports_bp.route('/reports/wasted-items', methods=['GET'])
 @jwt_required()
 def get_wasted_items():
-
     user_id = int(get_jwt_identity())
     today = date.today()
 
@@ -71,9 +70,7 @@ def get_wasted_items():
 @reports_bp.route('/reports/waste-summary', methods=['GET'])
 @jwt_required()
 def get_waste_summary():
-
     user_id = int(get_jwt_identity())
-
     total_entries = db.session.query(func.count(PantryEntry.id)).filter(
         PantryEntry.user_id == user_id
     ).scalar()
@@ -120,7 +117,6 @@ def get_waste_summary():
 @reports_bp.route('/reports/recent-waste', methods=['GET'])
 @jwt_required()
 def get_recent_waste():
-
     user_id = int(get_jwt_identity())
 
     limit = request.args.get('limit', default=10, type=int)

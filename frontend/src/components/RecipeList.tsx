@@ -6,20 +6,25 @@ type RecipeListProps = {
 };
 const RecipeList = ({ recipes }: RecipeListProps) => {
   return (
-    <ul>
+    <div className="min-w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {recipes.map((recipe) => (
-        <li className="capitalize">
+        <div
+          key={recipe.id}
+          className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition duration-200 sm:min-w-[300px]"
+        >
+          <h3 className="text-xl font-semibold mb-2 capitalize">
+            {recipe.name}
+          </h3>
           <Link
             to="/app/recipe/$recipeId"
-            params={{
-              recipeId: recipe.id.toString(),
-            }}
+            params={{ recipeId: recipe.id.toString() }}
+            className="text-blue-600 hover:underline font-medium"
           >
-            {recipe.name}
+            View Recipe →
           </Link>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 };
 

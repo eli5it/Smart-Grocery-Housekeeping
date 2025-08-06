@@ -29,7 +29,7 @@ const SubEntry = ({ entry, updateEntry }: SubEntryProps) => {
           {!editing ? <Pencil /> : <X />}
         </button>
       </td>
-      <td className="px-5">
+      <td>
         <Popover updateEntry={updateEntry} entryId={entry.id}></Popover>
       </td>
     </tr>

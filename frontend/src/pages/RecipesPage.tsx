@@ -18,15 +18,21 @@ const RecipePage = () => {
   const { data, isPending, error } = recipeQuery;
 
   return (
-    <>
-      <h1 className="font-bold text-3xl">Recipes</h1>
-      {isPending && <h2>Fetching Recipes ...</h2>}
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="font-bold text-4xl text-center mb-2">Recipes</h1>
+      <p className="text-lg text-gray-600 text-center mb-8">
+        Recommended for you based on your pantry
+      </p>
+
+      {isPending && <p className="text-center">Fetching recipes...</p>}
       {error && (
-        <h2>An unexpected error has occured. Please try again later.</h2>
+        <p className="text-center text-red-500">
+          An unexpected error has occurred. Please try again later.
+        </p>
       )}
-      <h2 className="text-2xl my-5">Reccomended for you</h2>
-      {data && <RecipeList recipes={data.data.recipes}></RecipeList>}
-    </>
+
+      {data && <RecipeList recipes={data.data.recipes} />}
+    </div>
   );
 };
 export default RecipePage;
