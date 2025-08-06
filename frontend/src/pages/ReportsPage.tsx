@@ -52,7 +52,7 @@ const ReportsPage = () => {
       },
       {
         name: "Discarded",
-        value: expiring,
+        value: discarded,
         color: "#C62828",
       },
     ];

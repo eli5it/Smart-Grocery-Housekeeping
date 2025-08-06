@@ -109,6 +109,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
         },
       });
     }
+    console.log(vars.newStatus);
     return axios.patch(
       `/api/pantry/${vars.entryId}`,
       {
