@@ -43,8 +43,6 @@ const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
     }, pantryObject);
   }
 
-  console.log(mode);
-
   if (pantryItems) {
     return (
       <div className="h-full w-full flex justify-center items-center">
