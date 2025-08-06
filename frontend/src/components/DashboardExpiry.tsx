@@ -1,4 +1,3 @@
-// Displays expired pantry items on the dashboard
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import type { PantryEntry } from "../lib/types";
@@ -11,7 +10,10 @@ type ExpiryAPIResponse = {
 type DashboardExpiryProps = {
   mode: "expired" | "expiring";
 };
+
 const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
+  // This component displays a list of expired or expired pantry items
+
   const getExpiredItems = () => {
     const token = localStorage.getItem("access_token");
     return axios.get<ExpiryAPIResponse>("/api/pantry/expired", {
@@ -32,6 +34,7 @@ const DashboardExpired = ({ mode }: DashboardExpiryProps) => {
 
   let pantryObject: { [productName: string]: PantryEntry[] } = {};
 
+  // convert pantryItems array into object for ease of counting
   if (pantryItems) {
     pantryItems.reduce((prev, curr) => {
       if (!(curr.product_name in prev)) {
