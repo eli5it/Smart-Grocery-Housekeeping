@@ -1,6 +1,5 @@
 import type { PantryItem } from "../lib/types";
 import { useState } from "react";
-import { format } from "date-fns";
 
 type PantryItemListElement = {
   pantryItem: PantryItem;
@@ -28,6 +27,7 @@ const PantryItemListElement = ({
   };
 
   const duplicateItem = () => {
+    // updates pantry item state to include additional copy of pantryItem
     setPantryItems((prevItems) =>
       [...prevItems]
         .concat(newItem)

@@ -1,4 +1,8 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
+// # Citation for the following function:
+// Date: 08/06/2025
+// Adapted from: https://recharts.org/en-US/examples/PieChartWithCustomizedLabel
+// Source URL: http://www.oregonstate.edu/mysource
 
 type TooltipPayload = ReadonlyArray<any>;
 
@@ -69,6 +73,8 @@ type ChartProps = {
   }[];
 };
 const Chart = ({ data }: ChartProps) => {
+  // This component renders a pie chart based on the inputted data
+  // Charts are displayed on the reports page
   return (
     <div className="min-h-[240px] h-[240px] md:inline-block w-full md:w-[400px]">
       <ResponsiveContainer width="100%" height="100%">

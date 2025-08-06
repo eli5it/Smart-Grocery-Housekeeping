@@ -12,10 +12,12 @@ type PopoverProps = {
   }) => void;
 };
 const EntryPopover = ({ updateEntry, entryId }: PopoverProps) => {
+  // This component builds on top of the Radix Popover component
+  // Users utilize the buttons on this component to delete/discard/use pantry items
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button className="px-5" aria-label="Update dimensions">
+        <button className="px-5">
           <X />
         </button>
       </Popover.Trigger>

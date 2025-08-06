@@ -8,6 +8,7 @@ import type { PantryStats } from "../lib/types";
 
 const InventoryPage = () => {
   const [mode, setMode] = useState<"add" | "view">("view");
+
   const getPantry = () => {
     const token = localStorage.getItem("access_token");
     return axios.get<PantryEntry[]>("/api/pantry", {
@@ -18,6 +19,7 @@ const InventoryPage = () => {
   };
 
   const pantryQuery = useQuery({ queryKey: ["pantry"], queryFn: getPantry });
+
   const getStats = () => {
     const token = localStorage.getItem("access_token");
     return axios.get<PantryStats>("/api/pantry/stats", {
@@ -32,7 +34,7 @@ const InventoryPage = () => {
 
   const { data, isPending, error } = pantryQuery;
 
-  // this is a really hacky solution, should replace w/subroutes later
+  // TODO: In the future replace this with subroutes
   if (mode == "view") {
     if (isPending) {
       return <div className="font-bold text-3xl">Fetching your pantry</div>;
@@ -51,6 +53,8 @@ const InventoryPage = () => {
 
     let entries: PantryEntryByProductName = {};
 
+    // convert pantry entries array into object
+    // we want pantry entries with the same product name to be displayed together
     entries = responseData.reduce((acc, curr) => {
       if (acc[curr.product_name]) {
         acc[curr.product_name].push(curr);

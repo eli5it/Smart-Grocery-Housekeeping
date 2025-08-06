@@ -155,8 +155,11 @@ def update_pantry_entry(entry_id):
     db.session.commit()
     return jsonify(pantry_entry_schema.dump(pantry_entry)), 200
 
+
 # GENAI Citation
-# https://chatgpt.com/share/688cc3a5-06fc-8012-b632-4dff9c019b56
+# Date: 08/06/2025
+# Adapted from: https://chatgpt.com/share/688cc3a5-06fc-8012-b632-4dff9c019b56
+
 @pantry_bp.route('/pantry/stats', methods=['GET'])
 @jwt_required()
 def pantry_stats():

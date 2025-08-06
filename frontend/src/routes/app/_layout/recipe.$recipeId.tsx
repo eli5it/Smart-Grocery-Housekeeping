@@ -9,6 +9,7 @@ export const Route = createFileRoute("/app/_layout/recipe/$recipeId")({
 });
 
 const fetchRecipe = async (recipeId: string) => {
+  // supply Recipe page w/recipe data
   const token = localStorage.getItem("access_token");
   const res = await axios.get<Recipe>(`/api/recipes/${recipeId}`, {
     headers: {

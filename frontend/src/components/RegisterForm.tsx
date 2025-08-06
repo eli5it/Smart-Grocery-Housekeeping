@@ -24,7 +24,6 @@ const RegisterForm = () => {
   });
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    // let React handle the form submission
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -45,10 +44,13 @@ const RegisterForm = () => {
 
       const data = res.data;
       localStorage.setItem("access_token", data.access_token);
+
+      // redirect post login
       navigate({
         to: "/app/dashboard",
       });
     } catch (err) {
+      // 400 API responses
       setShowToast(true);
       setToastDetails({
         title: "Invalid username and or password",

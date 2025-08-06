@@ -8,9 +8,6 @@ from app.models.ingredient import Ingredient
 import sqlalchemy as sa
 from app import db
 
-
-
-
 vision_bp = Blueprint('vision', __name__, url_prefix="/api/vision")
 
 def get_vision_client():

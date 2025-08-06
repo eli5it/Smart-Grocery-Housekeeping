@@ -11,7 +11,9 @@ apple_path = test_dir / "assets" / "apple.jpg"
 
 def mock_vision_image_client():
     # GENAI Citation
-    # https://chatgpt.com/share/6885377c-e934-8012-96b5-2a6d7993647f
+    # Date: 08/06/2025
+    # Adapted from conversation w/chatgpt
+    # Source: https://chatgpt.com/share/6885377c-e934-8012-96b5-2a6d7993647f
     mock_label_1 = MagicMock()
     mock_label_1.description = "fruits"
     mock_label_1.score = 0.98

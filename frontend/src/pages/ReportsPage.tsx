@@ -21,8 +21,12 @@ const ReportsPage = () => {
 
   const stats = data?.data;
 
+  // contains stats for entries currently in the pantry
   let currentPieChartData;
+
+  // contains stats for discarded/used entriess
   let outOfStockPieChartData;
+
   if (stats) {
     const { expiring, expired, total, used, discarded } = stats;
 

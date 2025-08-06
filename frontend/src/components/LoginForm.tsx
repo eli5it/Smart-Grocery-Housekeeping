@@ -2,9 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "@tanstack/react-router";
 import Toaster from "./Toaster";
-import type { ToastDetails } from "../lib/types";
 
 const LoginForm = () => {
+  // This component displays a Login form, and handles login requests
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showToast, setShowToast] = useState(false);
@@ -21,7 +21,6 @@ const LoginForm = () => {
         password,
       });
       localStorage.setItem("access_token", res.data.access_token);
-      console.log("redirecting");
       navigate({
         to: "/app/dashboard",
       });

@@ -6,6 +6,7 @@ import axios from "axios";
 export const Route = createFileRoute("/app/_layout")({
   component: RouteComponent,
   beforeLoad: async ({}) => {
+    // redirect non-authenticated users to the login page
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw redirect({

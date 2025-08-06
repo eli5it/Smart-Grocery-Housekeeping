@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { PantryEntry, PantryEntryByProductName } from "../lib/types";
 import { cn } from "@udecode/cn";
-import { X, Pencil, ActivityIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { queryClient } from "../lib/queryClient";
@@ -18,17 +17,13 @@ type SubEntryProps = {
   }) => void;
 };
 const SubEntry = ({ entry, updateEntry }: SubEntryProps) => {
-  const [editing, setEditing] = useState(false);
+  // Displays entries that are hidden until user clicks the ">" button
   return (
     <tr className="border-t border-gray-500">
       <td className="px-10 py-2">{entry.product_name}</td>
       <td className="px-5 py-2">{entry.ingredient.name}</td>
       <td className="px-5 py-2">{entry.expiration_date}</td>
-      {/* <td className="px-5">
-        <button onClick={() => setEditing(!editing)}>
-          {!editing ? <Pencil /> : <X />}
-        </button>
-      </td> */}
+
       <td>
         <Popover updateEntry={updateEntry} entryId={entry.id}></Popover>
       </td>
@@ -46,10 +41,11 @@ type PantryTableEntryProps = {
     newStatus: "used" | "discarded" | "deleted";
   }) => void;
 };
+
 const PantryTableEntry = ({ entries, updateEntry }: PantryTableEntryProps) => {
+  // This component represents an individual row in the pantry entry table
   const [expanded, setExpanded] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+
   // this is emergency error handling, entries should always have a non-zero length
   if (entries.length === 0) {
     return <></>;
@@ -75,11 +71,7 @@ const PantryTableEntry = ({ entries, updateEntry }: PantryTableEntryProps) => {
         </td>
         <td className="px-5 py-2">{entries[0].ingredient.name}</td>
         <td className="px-5 py-2">{entries[0].expiration_date}</td>
-        {/* <td className="px-5">
-          <button onClick={() => setEditing(!editing)}>
-            {!editing ? <Pencil /> : <X />}
-          </button>
-        </td> */}
+
         <td>
           <Popover entryId={entries[0].id} updateEntry={updateEntry} />
         </td>
@@ -95,6 +87,7 @@ const PantryTableEntry = ({ entries, updateEntry }: PantryTableEntryProps) => {
 type PantryTableProps = {
   pantryEntries: PantryEntryByProductName;
 };
+
 const PantryTable = ({ pantryEntries }: PantryTableProps) => {
   const updatePantryEntry = async (vars: {
     entryId: number;
@@ -109,7 +102,8 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
         },
       });
     }
-    console.log(vars.newStatus);
+
+    // use PATCH route to discard or waste a pantry item
     return axios.patch(
       `/api/pantry/${vars.entryId}`,
       {
@@ -147,9 +141,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
               <th className="px-5 py-2 text-left" scope="col">
                 Expiration Date
               </th>
-              {/* <th className="px-5 py-2 text-left" scope="col">
-                Edit
-              </th> */}
+
               <th className="px-5 py-2 text-left" scope="col">
                 Delete
               </th>
@@ -160,6 +152,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
               <PantryTableEntry
                 updateEntry={updateMutation.mutate}
                 entries={pantryEntries[product_name]}
+                key={product_name}
               />
             ))}
           </tbody>
