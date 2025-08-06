@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toast } from "radix-ui";
 import { queryClient } from "./lib/queryClient";
 
 // Import the generated route tree
@@ -25,10 +24,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <Toast.Provider>
-          <RouterProvider router={router} />
-          <Toast.Viewport className="fixed bottom-4 right-4 z-[10]" />
-        </Toast.Provider>
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </StrictMode>
   );

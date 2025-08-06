@@ -1,0 +1,22 @@
+# Docker ignore file for efficient builds
+.git
+.gitignore
+*.md
+README.md
+SYNOLOGY_DEPLOYMENT.md
+node_modules
+.env
+.venv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
