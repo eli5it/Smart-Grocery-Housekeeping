@@ -24,11 +24,11 @@ const SubEntry = ({ entry, updateEntry }: SubEntryProps) => {
       <td className="px-10 py-2">{entry.product_name}</td>
       <td className="px-5 py-2">{entry.ingredient.name}</td>
       <td className="px-5 py-2">{entry.expiration_date}</td>
-      <td className="px-5">
+      {/* <td className="px-5">
         <button onClick={() => setEditing(!editing)}>
           {!editing ? <Pencil /> : <X />}
         </button>
-      </td>
+      </td> */}
       <td>
         <Popover updateEntry={updateEntry} entryId={entry.id}></Popover>
       </td>
@@ -75,11 +75,11 @@ const PantryTableEntry = ({ entries, updateEntry }: PantryTableEntryProps) => {
         </td>
         <td className="px-5 py-2">{entries[0].ingredient.name}</td>
         <td className="px-5 py-2">{entries[0].expiration_date}</td>
-        <td className="px-5">
+        {/* <td className="px-5">
           <button onClick={() => setEditing(!editing)}>
             {!editing ? <Pencil /> : <X />}
           </button>
-        </td>
+        </td> */}
         <td>
           <Popover entryId={entries[0].id} updateEntry={updateEntry} />
         </td>
@@ -109,6 +109,7 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
         },
       });
     }
+    console.log(vars.newStatus);
     return axios.patch(
       `/api/pantry/${vars.entryId}`,
       {
@@ -146,9 +147,9 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
               <th className="px-5 py-2 text-left" scope="col">
                 Expiration Date
               </th>
-              <th className="px-5 py-2 text-left" scope="col">
+              {/* <th className="px-5 py-2 text-left" scope="col">
                 Edit
-              </th>
+              </th> */}
               <th className="px-5 py-2 text-left" scope="col">
                 Delete
               </th>

@@ -89,7 +89,7 @@ def get_image_details():
     except Exception:
         print('exception occured')
         #handle all google api errors
-        return jsonify({"ingredients": []})
+        return jsonify({"ingredient": None})
 
 
 

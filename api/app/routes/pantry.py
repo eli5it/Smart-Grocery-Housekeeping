@@ -229,7 +229,7 @@ def pantry_stats():
         "expired": stats.expired,
         "expiring": stats.expiring,
         "used" : stats.used,
-        "discard": stats.discarded,
+        "discarded": stats.discarded,
         "available": stats.available
     })
 
