@@ -1,11 +1,10 @@
-import { cn } from "@udecode/cn";
-
 type ModalContainerProps = {
-  close: () => void;
+  close: () => void; // Used to hide modal
   children?: React.ReactNode;
 };
 
 const ModalContainer = ({ close, children }: ModalContainerProps) => {
+  // This Component renders a background shared by multiple modals
   return (
     <div
       onClick={close}

@@ -1,3 +1,5 @@
+// Typescript Types used throughout the frontend
+
 export type ToastDetails = {
   title: string;
   description: string;

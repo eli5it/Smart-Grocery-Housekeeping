@@ -8,7 +8,6 @@ import axios from "axios";
 import Toaster from "../components/Toaster";
 import PantryItemList from "../components/PantryItemList";
 import PantryItemListElement from "../components/PantryItemListElement";
-import { useNavigate } from "@tanstack/react-router";
 import Webcam from "react-webcam";
 import { queryClient } from "../lib/queryClient";
 import { format } from "date-fns";
@@ -26,13 +25,13 @@ const videoConstraints = {
   facingMode: "user",
 };
 
-// send base64 image to the frontend
 const CameraView = ({
   setPantryItems,
   pantryItems,
   setShowToast,
   setToastDetails,
 }: CameraViewProps) => {
+  // This view is displayed to users who want to take picture of products to add to their inventory
   const uploadImage = (base64String: string) => {
     return axios.post<{ ingredient: string }>("/api/vision/analyze", {
       image: base64String,
@@ -42,7 +41,7 @@ const CameraView = ({
 
   const uploadMutation = useMutation({
     mutationFn: uploadImage,
-    onSuccess: (response, barcode) => {
+    onSuccess: (response) => {
       setShowToast(true);
       setToastDetails({
         title: "Succesfully Scanned image",
@@ -56,7 +55,7 @@ const CameraView = ({
       };
       setPantryItems((prev) => [...prev, newPantryItem]);
     },
-    onError: (err, barcode) => {
+    onError: (_, barcode) => {
       // need to have user input missing information manually
       const newPantryItem: PantryItem = {
         barcode,
@@ -128,6 +127,7 @@ const BarcodeView = ({
   setToastDetails,
   setShowToast,
 }: BarcodeViewProps) => {
+  // This view is displayed for users looking to scan barcodes of new pantry entries
   const [displayCamera, setDisplayCamera] = useState(false);
 
   // use ref instead of state to prevent excessive re-renders when scanning barcodes
@@ -156,7 +156,7 @@ const BarcodeView = ({
         description: "",
       });
     },
-    onError: (err, barcode) => {
+    onError: (_items, barcode) => {
       // need to have user input missing information manually
       const newPantryItem: PantryItem = {
         barcode,
@@ -178,7 +178,7 @@ const BarcodeView = ({
     setDisplayCamera(!displayCamera);
   };
 
-  const updateHandler = (err: any, result: any) => {
+  const updateHandler = (_: any, result: any) => {
     if (result) {
       const barcode: string = result.text;
       const barcodeExists = attemptedBarcodesRef.current.has(barcode);
@@ -224,6 +224,7 @@ type ManualViewProps = {
 };
 
 const ManualView = ({ setPantryItems }: ManualViewProps) => {
+  // This view allows user to use a form to manually add pantry items
   const newPantryItem: PantryItem = {
     barcode: "",
     product_name: "",

@@ -6,7 +6,9 @@ type RecentWasteAPIResponse = {
   recent_waste: WastedIngredient[];
   count: number;
 };
+
 const RecentWaste = () => {
+  // This Component returns a table containing recently wasted pantry items of the logged in user
   const getRecentWaste = () => {
     const token = localStorage.getItem("access_token");
     return axios.get<RecentWasteAPIResponse>("/api/reports/recent-waste", {
@@ -23,9 +25,11 @@ const RecentWaste = () => {
 
   const { data: data } = recentWasteQuery;
 
+  // axios's reponse has a .data property
   const recentWaste = data?.data;
 
   const wastedItems = recentWaste?.recent_waste;
+
   if (wastedItems?.length !== 0) {
     return (
       <table className="min-w-full">
@@ -65,6 +69,7 @@ const RecentWaste = () => {
       </div>
     );
   } else {
+    // Return null while query is loading
     return null;
   }
 };

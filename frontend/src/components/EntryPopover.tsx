@@ -12,10 +12,12 @@ type PopoverProps = {
   }) => void;
 };
 const EntryPopover = ({ updateEntry, entryId }: PopoverProps) => {
+  // This component builds on top of the Radix Popover component
+  // Users utilize the buttons on this component to delete/discard/use pantry items
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button className="px-5" aria-label="Update dimensions">
+        <button className="px-5">
           <X />
         </button>
       </Popover.Trigger>
@@ -29,7 +31,7 @@ const EntryPopover = ({ updateEntry, entryId }: PopoverProps) => {
               onClick={() =>
                 updateEntry({ entryId: entryId, newStatus: "deleted" })
               }
-              className="bg-gray-200 text-black font-bold px-2 py-1 rounded-lg"
+              className="bg-gray-200 hover:bg-gray-600 text-black font-bold px-2 py-1 rounded-lg"
             >
               Delete
             </button>
@@ -37,7 +39,7 @@ const EntryPopover = ({ updateEntry, entryId }: PopoverProps) => {
               onClick={() =>
                 updateEntry({ entryId: entryId, newStatus: "discarded" })
               }
-              className="bg-gray-300 text-black font-bold px-2 py-1 rounded-lg"
+              className="bg-red-400 hover:bg-red-700 text-black font-bold px-2 py-1 rounded-lg"
             >
               Discarded
             </button>
@@ -45,7 +47,7 @@ const EntryPopover = ({ updateEntry, entryId }: PopoverProps) => {
               onClick={() =>
                 updateEntry({ entryId: entryId, newStatus: "used" })
               }
-              className="bg-gray-400 text-black font-bold px-2 py-1 rounded-lg"
+              className="bg-green-300 hover:bg-green-700 text-black font-bold px-2 py-1 rounded-lg"
             >
               Used
             </button>

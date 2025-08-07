@@ -5,7 +5,6 @@ from app.models import Ingredient, Recipe, RecipeIngredient, User, PantryEntry
 import ijson
 import sqlalchemy as sa
 from werkzeug.security import check_password_hash, generate_password_hash
-import random
 from datetime import date, timedelta
 
 def load_recipe_data(recipe_file_path = './data/matching_recipes.json'):

@@ -7,6 +7,7 @@ type ToasterProps = {
   toastDetails: ToastDetails;
 };
 const Toaster = ({ showToast, setShowToast, toastDetails }: ToasterProps) => {
+  // This component utilizes the Toast component from radix-ui to display notification to users
   return (
     <Toast.Root
       open={showToast}

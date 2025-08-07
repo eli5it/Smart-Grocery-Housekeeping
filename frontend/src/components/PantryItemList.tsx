@@ -23,7 +23,6 @@ const PantryItemList = ({
               />
             ))}
           </ul>
-          <div className="flex justify-center"></div>
         </div>
       )}
     </>

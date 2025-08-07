@@ -5,6 +5,7 @@ type RecipeListProps = {
   recipes: Recipe[];
 };
 const RecipeList = ({ recipes }: RecipeListProps) => {
+  // This component is utilized by the recipes page, and displays a responsive list of recipes
   return (
     <div className="min-w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {recipes.map((recipe) => (

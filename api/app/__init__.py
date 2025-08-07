@@ -8,7 +8,6 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 
-# assistance from ChatGPT https://chatgpt.com/share/6865e6ff-26c0-8012-a772-70b7b9de5273
 
 db = SQLAlchemy()
 migrate = Migrate()

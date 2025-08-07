@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@udecode/cn";
 import ModalContainer from "./ModalContainer";
-import { House, ChefHat, Camera, ClipboardMinus, Milk } from "lucide-react";
-import "./SidebarIcon.css";
+import { House, ChefHat, Camera, ClipboardMinus } from "lucide-react";
 import { Apple } from "lucide-react";
 
 type MobileSidebarProps = {
@@ -15,17 +14,21 @@ const MobileSidebar = ({
   toggleSidebarVisibility,
   showMobileSidebar,
 }: MobileSidebarProps) => {
+  // This component is rendered on screens with viewports < 768px
+  // It displays a modal containing navigation links
+
   return (
     <div className="absolute top-4 left-4 md:hidden">
       <button
-        className={cn("menu-icon", {
+        className={cn("menu-icon h-10 w-10 relative cursor-pointer", {
           open: showMobileSidebar,
         })}
         onClick={toggleSidebarVisibility}
       >
-        <div className="bar top"></div>
-        <div className="bar bottom"></div>
+        <div className="bar absolute top left-0 right-0 h-1 bg-black rounded-[2px] top-3"></div>
+        <div className="bar absolute bottom left-0 right-0 h-1 bg-black rounded-[2px] bottom-3"></div>
       </button>
+
       {showMobileSidebar && (
         <ModalContainer close={toggleSidebarVisibility}>
           <nav className="flex flex-col items-center justify-center px-2 py-3 h-full">
@@ -51,6 +54,8 @@ const MobileSidebar = ({
 };
 
 const DesktopSidebar = () => {
+  // This Component is hidden when a viewport width is < 768px
+  // It displays a navbar full of navigation links to all of the application's
   return (
     <aside className="hidden px-10 md:flex md:flex-col md:absolute">
       <div className="flex items-center gap-2 mb-5">
