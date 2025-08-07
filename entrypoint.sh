@@ -1,7 +1,4 @@
 #!/bin/bash
-
-# Start Flask backend
-gunicorn -b 127.0.0.1:5000 api.run:app &
-
-# Start Nginx (this must stay in the foreground!)
-nginx -g "daemon off;"
+cd /app/api
+export FLASK_APP=run.py
+exec gunicorn --bind 0.0.0.0:5000 run:app

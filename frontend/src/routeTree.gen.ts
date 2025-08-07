@@ -19,7 +19,6 @@ import { Route as AppLayoutRouteRouteImport } from './routes/app/_layout/route'
 import { Route as AppLayoutReportsRouteImport } from './routes/app/_layout/reports'
 import { Route as AppLayoutRecipesRouteImport } from './routes/app/_layout/recipes'
 import { Route as AppLayoutInventoryRouteImport } from './routes/app/_layout/inventory'
-import { Route as AppLayoutGroceriesRouteImport } from './routes/app/_layout/groceries'
 import { Route as AppLayoutDashboardRouteImport } from './routes/app/_layout/dashboard'
 import { Route as AppLayoutRecipeRecipeIdRouteImport } from './routes/app/_layout/recipe.$recipeId'
 
@@ -69,11 +68,6 @@ const AppLayoutInventoryRoute = AppLayoutInventoryRouteImport.update({
   path: '/inventory',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const AppLayoutGroceriesRoute = AppLayoutGroceriesRouteImport.update({
-  id: '/groceries',
-  path: '/groceries',
-  getParentRoute: () => AppLayoutRouteRoute,
-} as any)
 const AppLayoutDashboardRoute = AppLayoutDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -92,7 +86,6 @@ export interface FileRoutesByFullPath {
   '/register': typeof authRegisterRoute
   '/app/': typeof AppIndexRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
-  '/app/groceries': typeof AppLayoutGroceriesRoute
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
@@ -104,7 +97,6 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/app/dashboard': typeof AppLayoutDashboardRoute
-  '/app/groceries': typeof AppLayoutGroceriesRoute
   '/app/inventory': typeof AppLayoutInventoryRoute
   '/app/recipes': typeof AppLayoutRecipesRoute
   '/app/reports': typeof AppLayoutReportsRoute
@@ -119,7 +111,6 @@ export interface FileRoutesById {
   '/(auth)/register': typeof authRegisterRoute
   '/app/': typeof AppIndexRoute
   '/app/_layout/dashboard': typeof AppLayoutDashboardRoute
-  '/app/_layout/groceries': typeof AppLayoutGroceriesRoute
   '/app/_layout/inventory': typeof AppLayoutInventoryRoute
   '/app/_layout/recipes': typeof AppLayoutRecipesRoute
   '/app/_layout/reports': typeof AppLayoutReportsRoute
@@ -134,7 +125,6 @@ export interface FileRouteTypes {
     | '/register'
     | '/app/'
     | '/app/dashboard'
-    | '/app/groceries'
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
@@ -146,7 +136,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/dashboard'
-    | '/app/groceries'
     | '/app/inventory'
     | '/app/recipes'
     | '/app/reports'
@@ -160,7 +149,6 @@ export interface FileRouteTypes {
     | '/(auth)/register'
     | '/app/'
     | '/app/_layout/dashboard'
-    | '/app/_layout/groceries'
     | '/app/_layout/inventory'
     | '/app/_layout/recipes'
     | '/app/_layout/reports'
@@ -239,13 +227,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutInventoryRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
-    '/app/_layout/groceries': {
-      id: '/app/_layout/groceries'
-      path: '/groceries'
-      fullPath: '/app/groceries'
-      preLoaderRoute: typeof AppLayoutGroceriesRouteImport
-      parentRoute: typeof AppLayoutRouteRoute
-    }
     '/app/_layout/dashboard': {
       id: '/app/_layout/dashboard'
       path: '/dashboard'
@@ -265,7 +246,6 @@ declare module '@tanstack/react-router' {
 
 interface AppLayoutRouteRouteChildren {
   AppLayoutDashboardRoute: typeof AppLayoutDashboardRoute
-  AppLayoutGroceriesRoute: typeof AppLayoutGroceriesRoute
   AppLayoutInventoryRoute: typeof AppLayoutInventoryRoute
   AppLayoutRecipesRoute: typeof AppLayoutRecipesRoute
   AppLayoutReportsRoute: typeof AppLayoutReportsRoute
@@ -274,7 +254,6 @@ interface AppLayoutRouteRouteChildren {
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutDashboardRoute: AppLayoutDashboardRoute,
-  AppLayoutGroceriesRoute: AppLayoutGroceriesRoute,
   AppLayoutInventoryRoute: AppLayoutInventoryRoute,
   AppLayoutRecipesRoute: AppLayoutRecipesRoute,
   AppLayoutReportsRoute: AppLayoutReportsRoute,

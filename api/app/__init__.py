@@ -6,6 +6,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from flask import send_from_directory
+import os
 
 
 
@@ -15,7 +17,8 @@ jwt = JWTManager()
 
 
 def create_app(test_config=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="../dist", static_url_path="/")
+
 
     if test_config:
         app.config.from_mapping(test_config)
@@ -28,6 +31,17 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_react(path):
+        static_folder = app.static_folder
+        target = os.path.join(static_folder, path)
+
+        if path != "" and os.path.exists(target):
+            return send_from_directory(static_folder, path)
+        else:
+            return send_from_directory(static_folder, "index.html")
 
     @app.route('/api/health', methods=['GET'])
     def health_check():

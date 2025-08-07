@@ -6,34 +6,24 @@ RUN npm install
 COPY frontend .
 RUN npm run build
 
-# === Stage 2: Backend + Nginx ===
+# === Stage 2: Backend only ===
 FROM python:3.11-slim
 
-# Install nginx
-RUN apt-get update && apt-get install -y nginx && apt-get clean
-
-# Set workdir
 WORKDIR /app
+
+COPY ./api /app/api
+COPY --from=frontend-builder /app/dist /app/api/dist
+
+RUN pip install --upgrade pip
+RUN pip install -r /app/api/requirements.txt
+
+# Add this to make `from app import ...` work
 ENV PYTHONPATH=/app/api
 
+WORKDIR /app/api
 
-# Copy backend
-COPY api/ ./api/
-COPY api/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy frontend build from previous stage
-COPY --from=frontend-builder /app/dist /usr/share/nginx/html
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Optional: add entrypoint script if you need to populate DB or run migrations
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-# Expose ports
-EXPOSE 80
-
-# Run both services
 CMD ["/entrypoint.sh"]
