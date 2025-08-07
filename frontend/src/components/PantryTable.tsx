@@ -148,11 +148,11 @@ const PantryTable = ({ pantryEntries }: PantryTableProps) => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(pantryEntries).map((product_name) => (
+            {Object.keys(pantryEntries).map((product_name, idx) => (
               <PantryTableEntry
                 updateEntry={updateMutation.mutate}
                 entries={pantryEntries[product_name]}
-                key={product_name}
+                key={idx}
               />
             ))}
           </tbody>

@@ -35,6 +35,18 @@ const PantryItemListElement = ({
     );
   };
 
+  const changeHandler = (newItem: PantryItem) => {
+    setPantryItems((prevItems) => {
+      const items = prevItems.map((item) => {
+        if (item.product_name === product_name) {
+          return newItem;
+        }
+        return item;
+      });
+      return items;
+    });
+  };
+
   return (
     <li className="bg-white px-3 py-3 w-[250px] rounded-lg list-none border border-gray-500">
       {mode === "new" && (
@@ -47,7 +59,10 @@ const PantryItemListElement = ({
             <input
               className="block outline-blue-300 border border-black rounded-md pl-1"
               value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              onChange={(e) => {
+                setProductName(e.target.value);
+                changeHandler({ ...newItem, product_name: e.target.value });
+              }}
               type="text"
             />
           </label>
@@ -56,7 +71,10 @@ const PantryItemListElement = ({
             <input
               className="block outline-blue-300 border border-black rounded-md pl-1"
               value={ingredientName}
-              onChange={(e) => setIngredientName(e.target.value)}
+              onChange={(e) => {
+                setIngredientName(e.target.value);
+                changeHandler({ ...newItem, ingredient_name: e.target.value });
+              }}
               type="text"
             />
           </label>
@@ -65,7 +83,10 @@ const PantryItemListElement = ({
             <input
               className="block outline-blue-300 border border-black w-full rounded-md pl-1"
               value={expirationDate}
-              onChange={(e) => setExpirationDate(e.target.value)}
+              onChange={(e) => {
+                setExpirationDate(e.target.value);
+                changeHandler({ ...newItem, ingredient_name: e.target.value });
+              }}
               type="date"
             />
           </label>
