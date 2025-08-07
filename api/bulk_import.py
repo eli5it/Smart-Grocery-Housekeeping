@@ -47,7 +47,7 @@ def create_test_user(username = "test_user", password = 'password'):
     
         db.session.add(user)
         db.session.commit()
-
+    
     ingredient_stmt = sa.select(Ingredient)
     all_ingredients = db.session.execute(ingredient_stmt).scalars().all()
     ingredient_count = len(all_ingredients)
@@ -86,7 +86,10 @@ if __name__ == "__main__":
     from app import create_app
     app = create_app()
     with app.app_context():
-        db.drop_all()
-        db.create_all()
-        load_recipe_data()
-        create_test_user()
+        user = db.session.execute(
+        sa.select(User).where(User.username == "test_user")).scalar_one_or_none()
+        if user is None:
+            db.drop_all()
+            db.create_all()
+            load_recipe_data()
+            create_test_user()

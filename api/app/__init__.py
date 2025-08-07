@@ -29,6 +29,10 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+    @app.route('/api/health', methods=['GET'])
+    def health_check():
+        return {"status": "ok"}, 200
+
     @app.shell_context_processor
     def make_shell_context():
         # DO NOT MOVE imports
