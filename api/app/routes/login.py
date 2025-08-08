@@ -8,6 +8,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.models.user import User
 from app.schemas import UserSchema
 from app import db
+import logging
+import os
+logging.basicConfig(level=logging.DEBUG)
 
 
 login_bp = Blueprint('login', __name__)
@@ -17,6 +20,10 @@ user_schema = UserSchema()
 
 @login_bp.route('/login', methods=['POST'])
 def login():
+    db_path = os.path.abspath("/app/api/app.db") 
+    logging.debug(f"DB absolute path: {db_path}")
+    logging.debug(f"DB file exists: {os.path.exists(db_path)}")
+    logging.debug(f"Current working directory: {os.getcwd()}")
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
 

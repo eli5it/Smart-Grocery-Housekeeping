@@ -1,0 +1,12 @@
+frontend/node_modules
+frontend/package-lock.json
+
+# Ignore Python-specific files and dependencies
+api/__pycache__
+api/.pytest_cache
+api/venv
+
+# Ignore system files and Docker artifacts
+.DS_Store
+Dockerfile
+docker-compose.yml
