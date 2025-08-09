@@ -1,0 +1,15 @@
+.dockerignore
+.gitignore
+.github
+./api/__pycache__
+./api/venv
+./api/tests
+./api/REQUESTS
+./api/dist
+./api/.flaskenv
+./api/gitignore
+./api/data
+
+
+./frontend/node_modules
+./frontend/.gitignore

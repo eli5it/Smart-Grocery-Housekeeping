@@ -1,7 +1,7 @@
 __pycache__
 venv
 .flaskenv
-./api/app.db
 google_cloud.json
 vision_service_key.json
 /dist
+app.db

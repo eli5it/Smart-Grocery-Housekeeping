@@ -30,6 +30,7 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+
     # Health check endpoint
     @app.route('/api/health', methods=['GET'])
     def health_check():
