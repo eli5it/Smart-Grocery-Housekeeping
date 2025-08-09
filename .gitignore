@@ -2,3 +2,7 @@
 api/app.db
 ./api/app.db
 .vscode/settings.json
+smart-grocery-deploy-fixed-entrypoint.tar.gz
+smart-grocery-deploy-inline-command.tar.gz
+smart-grocery-deploy-updated.tar.gz
+smart-grocery-deploy.tar.gz

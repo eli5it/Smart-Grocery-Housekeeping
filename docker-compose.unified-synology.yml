@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Unified application (Frontend + Backend served by Flask)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-grocery-app
+    restart: "no"  # Temporarily disable restart during import
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=sqlite:///app.db
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-key-change-me}
+      - RESET_DATABASE=${RESET_DATABASE:-true}  # Set to 'true' to reset database
+    volumes:
+      - app_data:/app/api/data
+    ports:
+      - "8080:5000"  # External port 8080 maps to internal port 5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # Inline command that includes database migrations and bulk import
+    command: >
+      sh -c "
+      cd /app/api &&
+      export FLASK_APP=run.py &&
+      echo '=== Database Migration Setup ===' &&
+      flask db upgrade &&
+      echo 'Checking if database needs initial data...' &&
+      echo 'Removing any previous import completion flag...' &&
+      rm -f /app/api/.import_completed &&
+      USER_COUNT=$$(python -c \"from app import create_app, db; from app.models import User; import sqlalchemy as sa; app = create_app(); app.app_context().push(); print(db.session.execute(sa.select(sa.func.count(User.id))).scalar())\");
+      echo \"Users in database: $$USER_COUNT\";
+      echo '=== Running Bulk Import ===';
+      if [ -f \"./data/matching_recipes.json\" ]; then
+        echo 'Found recipe data file, importing...';
+        timeout 300 python bulk_import.py || echo 'ERROR: Bulk import failed!';
+        echo 'Bulk import script execution finished!';
+        touch /app/api/.import_completed;
+        python -c \"from app import create_app, db; from app.models import User, Recipe, Ingredient; import sqlalchemy as sa; app = create_app(); app.app_context().push(); user_count = db.session.execute(sa.select(sa.func.count(User.id))).scalar(); recipe_count = db.session.execute(sa.select(sa.func.count(Recipe.id))).scalar(); ingredient_count = db.session.execute(sa.select(sa.func.count(Ingredient.id))).scalar(); print(f'Import results: {user_count} users, {recipe_count} recipes, {ingredient_count} ingredients')\";
+      else
+        echo 'WARNING: Recipe data file not found, creating basic test user...';
+        python -c \"from app import create_app, db; from app.models import User; from werkzeug.security import generate_password_hash; app = create_app(); app.app_context().push(); password_hash = generate_password_hash('password'); user = User(username='test_user', password_hash=password_hash); db.session.add(user); db.session.commit(); print('Created basic test user: test_user / password')\";
+        touch /app/api/.import_completed;
+      fi &&
+      echo '=== Starting Application ===' &&
+      exec gunicorn --bind 0.0.0.0:5000 --timeout 120 --workers 1 run:app
+      "
+
+volumes:
+  app_data:
+    driver: local

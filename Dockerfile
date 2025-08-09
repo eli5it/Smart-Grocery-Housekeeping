@@ -22,8 +22,5 @@ ENV PYTHONPATH=/app/api
 
 WORKDIR /app/api
 
-
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
+# Default command - will be overridden by docker-compose
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run:app"]
