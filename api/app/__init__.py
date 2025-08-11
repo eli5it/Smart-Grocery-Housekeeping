@@ -69,27 +69,25 @@ def create_app(test_config=None):
     app.register_blueprint(recipe_bp, url_prefix='/api')
     app.register_blueprint(reports_bp, url_prefix='/api')
 
-    # Serve static files or index.html for all paths
+    # Serve index.html and let client handle routing
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_spa(path):
-        # Check if the path corresponds to an existing file
         if path and os.path.isfile(os.path.join(app.static_folder, path)):
             return send_from_directory(app.static_folder, path)
-        # Verify index.html exists before serving
         index_path = os.path.join(app.static_folder, 'index.html')
         if not os.path.isfile(index_path):
             return {"error": f"index.html not found at {index_path}"}, 500
+        # Will allow react to takeover
         return send_from_directory(app.static_folder, 'index.html')
 
     
 
-    # Custom 404 handler to serve index.html for non-API routes
+    # client-side handles 404s
     @app.errorhandler(404)
     def not_found(error):
         index_path = os.path.join(app.static_folder, 'index.html')
         if not os.path.isfile(index_path):
-            print(f"Error: index.html not found at {index_path}")
             return {"error": f"index.html not found at {index_path}"}, 500
         return send_from_directory(app.static_folder, 'index.html'), 200
 

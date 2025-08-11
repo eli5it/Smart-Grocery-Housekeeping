@@ -12,6 +12,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY ./api /app/api
+# for demo use temp db
 COPY ./api/app.db /tmp
 
 COPY --from=frontend-builder /app/dist /app/api/dist
@@ -19,11 +20,9 @@ COPY --from=frontend-builder /app/dist /app/api/dist
 RUN pip install --upgrade pip
 RUN pip install -r /app/api/requirements.txt
 
-# Add this to make `from app import ...` work
 ENV PYTHONPATH=/app/api
 
 WORKDIR /app/api
-
 
 
 COPY entrypoint.sh /entrypoint.sh
