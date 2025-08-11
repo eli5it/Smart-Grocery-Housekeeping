@@ -1,6 +1,6 @@
 # Smart Grocery Housekeeping
 
-A smart web application for managing your pantry, reducing waste, and discovering recipe ideas — powered by a React frontend and Flask backend.
+A smart web application for managing your pantry, reducing waste, and discovering recipe ideas.
 
 ## 🚀 Quickstart
 
